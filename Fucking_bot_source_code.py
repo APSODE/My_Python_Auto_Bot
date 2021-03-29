@@ -3,23 +3,22 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from discord.utils import get
 from discord import FFmpegPCMAudio
-from discord.ext import commands
-from discord.ext import tasks
-import discord
-import asyncio
-import time
+from discord.ext import commands # from discord.ext import tasks, commands
+from discord.ext import tasks #
+import discord #
+import asyncio #
+import time #
 import nacl
 import sys
 sys.path.append("C:\\Users\\leegu\\AppData\\Local\\Programs\\Python\\Python38\\Scripts")
 from youtube_dl import YoutubeDL
 import random
-import time
-import datetime
+import datetime #
 
 
 
 bot = commands.Bot(command_prefix='!')
-BOT_TOKEN = 'Your_Discord_Bot_Token' #현재 기능 테스트용 봇 토큰 후에 변경 필요
+BOT_TOKEN = 'NzQ3NzE2MjA3OTk3NjE2MTc5.X0S6-w.3AxgTXPrLKXDcflUjw77Y-3lO9Y' #'ODI0NjU3OTY5MTEwODQzNDEy.YFyklQ.5aYtkTh1mZZNT8d65SLr72Uw1zs' #현재 기능 테스트용 봇 토큰 후에 변경 필요
 
 
 
@@ -32,6 +31,31 @@ musicnow = []
 
 stop_loop = 1
 
+#=========================================제일고============================================
+monSub_206_B = ["선택과목 A","선택과목 C","영어","수학","선택과목 D","문학","자율"] #월요일
+tusSub_206_B = ["수학","미창","영어","선택과목 B","스생","문학","선택과목 D"] #화요일
+wenSub_206_B = ["선택과목 A","일본어 / 중국어","선택과목 C","선택과목 B","창특","동아리"] #수요일
+thrSub_206_B = ["진로","선택과목 D","문학","영어","선택과목 A","일본어 / 중국어","수학"] #목요일
+friSub_206_B = ["문학","미창","선택과목 B","선택과목 C","일본어 / 중국어","수학","영어"] #금요일
+#=========================================제일고============================================
+
+
+#=========================================김포고============================================
+monSub_206_K = ["선택과목 A","선택과목 C","영어","수학","선택과목 D","문학","자율"] #월요일
+tusSub_206_K = ["수학","미창","영어","선택과목 B","스생","문학","선택과목 D"] #화요일
+wenSub_206_K = ["선택과목 A","일본어 / 중국어","선택과목 C","선택과목 B","창특","동아리"] #수요일
+thrSub_206_K = ["진로","선택과목 D","문학","영어","선택과목 A","일본어 / 중국어","수학"] #목요일
+friSub_206_K = ["문학","미창","선택과목 B","선택과목 C","일본어 / 중국어","수학","영어"] #금요일
+#=========================================김포고============================================
+
+
+#=========================================사우고============================================
+monSub_205 = ["선택과목 A","영어","운건","선택과목 B","문학","수학","창체"] #월요일
+tusSub_205 = ["수학","일본어","선택과목 A","영어","음감","선택과목 C","문학"] #화요일
+wenSub_205 = ["운건","한문 / 정보","선택과목 C","문학","창체","창체"] #수요일
+thrSub_205 = ["진로","일본어","선택과목 B","문학","영어","선택과목 A","수학"] #목요일
+friSub_205 = ["영어","한문 / 정보","선택과목 C","일본어","음감","선택과목 B","수학"] #금요일
+
 monSub_204 = ["선택과목 A","음감","문학","선택과목 B","정보","일본어","창체"] #월요일
 tusSub_204 = ["영어","수학","선택과목 A","문학","운건","선택과목 C","진로"] #화요일
 wenSub_204 = ["영어","일본어","선택과목 C","수학","창체","창체"] #수요일
@@ -43,17 +67,21 @@ tusSub_202 = ["음감","문학","선택과목 A","정보","영어","선택과목
 wenSub_202 = ["진로","수학","선택과목 C","문학","창체","창체"] #수요일
 thrSub_202 = ["운건","수학","선택과목 B","영어","음감","선택과목 A","일본어"] #목요일
 friSub_202 = ["정보","문학","선택과목 C","수학","일본어","선택과목 B","영어"] #금요일
+#=========================================사우고============================================
+
 
 dotwName = ["토요일", "일요일"]
 
 holiSub = ["주말이당"]
-txtchId = 744199524138090501 #714475326708908133
+txtchId = 714475326708908133 #744199524138090501 
 #=========================================변수============================================
 
 def Today_Dotw_Checker(Date_Of_The_Week1): #오늘의 Dotw값을 받아서 해당 요일의 과목 배열을 각 반의 순서대로 2차원 배열의 형식으로 과목을 리턴
 
+    Second_todSub_205 = [] #위의 시간표에서 해당요일 시간표 저장하는 배열
     Second_todSub_204 = [] #위의 시간표에서 해당요일 시간표 저장하는 배열
     Second_todSub_202 = [] #위의 시간표에서 해당요일 시간표 저장하는 배열
+    #Second_todSub_206_K= [] #위의 시간표에서 해당요일 시간표 저장하는 배열
 
     if Date_Of_The_Week1 >= 5: #Date_Of_The_Week1의 값이 5보다 크거나 같다면 주말이므로 밑의 if문 안의 코드 실행
         #테스트용 코드
@@ -65,83 +93,170 @@ def Today_Dotw_Checker(Date_Of_The_Week1): #오늘의 Dotw값을 받아서 해�
         pass
 
     if Date_Of_The_Week1 == 0:
-        print("월요일")
+        #print("월요일")
+        Second_todSub_205 = monSub_205
         Second_todSub_204 = monSub_204
         Second_todSub_202 = monSub_202
+        #Second_todSub_206_K = monSub_206_K
 
-        return Second_todSub_202, Second_todSub_204
+
+
+        return Second_todSub_202, Second_todSub_204, Second_todSub_205 #, Second_todSub_206_K
 
     elif Date_Of_The_Week1 == 1:
-        print("화요일")
+        #print("화요일")
+        Second_todSub_205 = tusSub_205
         Second_todSub_204 = tusSub_204
         Second_todSub_202 = tusSub_202
+        #Second_todSub_206_K = tusSub_206_K
 
-        return Second_todSub_202, Second_todSub_204
+
+
+        return Second_todSub_202, Second_todSub_204, Second_todSub_205 #, Second_todSub_206_K
 
     elif Date_Of_The_Week1 == 2:
-        print("수요일")
+        #print("수요일")
+        Second_todSub_205 = wenSub_205
         Second_todSub_204 = wenSub_204
         Second_todSub_202 = wenSub_202
+        #Second_todSub_206_K = wenSub_206_K
 
-        return Second_todSub_202, Second_todSub_204
+
+
+        return Second_todSub_202, Second_todSub_204, Second_todSub_205 #, Second_todSub_206_K
 
     elif Date_Of_The_Week1 == 3:
-        print("목요일")
+        #print("목요일")
+        Second_todSub_205 = thrSub_205
         Second_todSub_204 = thrSub_204
         Second_todSub_202 = thrSub_202
+        #Second_todSub_206_K = thrSub_206_K
 
-        return Second_todSub_202, Second_todSub_204
+
+
+        return Second_todSub_202, Second_todSub_204, Second_todSub_205 #, Second_todSub_206_K
 
     elif Date_Of_The_Week1 == 4:
-        print("금요일")
+        #print("금요일")
+        Second_todSub_205 = friSub_205
         Second_todSub_204 = friSub_204
         Second_todSub_202 = friSub_202
+        #Second_todSub_206_K = friSub_206_K
 
-        return Second_todSub_202, Second_todSub_204
 
-def Get_Now_Period(td_hour, td_min): #Td_hour, Td_min의 값을 기준으로 현재의 교시를 받아오는 Get_period 배열을 리턴
+
+        return Second_todSub_202, Second_todSub_204, Second_todSub_205 #, Second_todSub_206_K
+
+def Get_Dotw(Date_Of_The_Week2):
+    
+    todDotw = 0
+
+    if Date_Of_The_Week2 == 0:
+        todDotw = "월요일"
+        return todDotw
+
+    elif Date_Of_The_Week2 == 1:
+        todDotw = "화요일"
+        return todDotw
+
+    elif Date_Of_The_Week2 == 2:
+        todDotw = "수요일"
+        return todDotw
+
+    elif Date_Of_The_Week2 == 3:
+        todDotw = "목요일"
+        return todDotw
+
+    elif Date_Of_The_Week2 == 4:
+        todDotw = "금요일"
+        return todDotw
+
+
+def Get_Now_Period(td_hour, td_min, td_sec): #Td_hour, Td_min의 값을 기준으로 현재의 교시를 받아오는 Get_period 배열을 리턴
     
     Get_period = 0
 
     if td_hour == 9:
         if td_min == 10:
-            Get_period = 1 #Get_period에 현재 교시를 추가
-            return Get_period
+            if td_sec == 0:
+                Get_period = 1 #Get_period에 현재 교시를 추가
+                return Get_period
 
     elif td_hour == 10:
         if td_min == 10:
-            Get_period = 2 #Get_period에 현재 교시를 추가
-            return Get_period
+            if td_sec == 0:
+                Get_period = 2 #Get_period에 현재 교시를 추가
+                return Get_period
 
     elif td_hour == 11:
         if td_min == 10:
-            Get_period = 3 #Get_period에 현재 교시를 추가
-            return Get_period
+            if td_sec == 0:
+                Get_period = 3 #Get_period에 현재 교시를 추가
+                return Get_period
 
     elif td_hour == 12:
         if td_min == 10:
-            Get_period = 4 #Get_period에 현재 교시를 추가
-            return Get_period
+            if td_sec == 0:
+                Get_period = 4 #Get_period에 현재 교시를 추가
+                return Get_period
 
     elif td_hour == 14:
         if td_min == 0:
-            Get_period = 5 #Get_period에 현재 교시를 추가
-            return Get_period
+            if td_sec == 0:
+                Get_period = 5 #Get_period에 현재 교시를 추가
+                return Get_period
 
     elif td_hour == 15:
         if td_min == 0:
-            Get_period = 6 #Get_period에 현재 교시를 추가
-            return Get_period
+            if td_sec == 0:
+                Get_period = 6 #Get_period에 현재 교시를 추가
+                return Get_period
 
     elif td_hour == 16:
         if td_min == 0:
-            Get_period = 7 #Get_period에 현재 교시를 추가
-            return Get_period
+            if td_sec == 0:
+                Get_period = 7 #Get_period에 현재 교시를 추가
+                return Get_period
     else: #테스트용 코드
-        Rnd_period = random.randint(1,7)
-        Get_period = Rnd_period
-        return Get_period
+        pass
+        #Rnd_period = random.randint(1,7)
+        #Get_period = Rnd_period
+        #return Get_period
 
+def Period_Changer(Current_Period):
+    
+    nowPeriod = Current_Period 
+    Cached_nowPeriod_fin = 0
+
+    if nowPeriod == 1:
+        Cached_nowPeriod_fin = 0
+        return Cached_nowPeriod_fin
+
+    elif nowPeriod == 2:
+        Cached_nowPeriod_fin = 1
+        return Cached_nowPeriod_fin
+
+    elif nowPeriod == 3:
+        Cached_nowPeriod_fin = 2
+        return Cached_nowPeriod_fin
+
+    elif nowPeriod == 4:
+        Cached_nowPeriod_fin = 3
+        return Cached_nowPeriod_fin
+
+    elif nowPeriod == 5:
+        Cached_nowPeriod_fin = 4
+        return Cached_nowPeriod_fin
+
+    elif nowPeriod == 6:
+        Cached_nowPeriod_fin = 5
+        return Cached_nowPeriod_fin
+
+    elif nowPeriod == 7:
+        Cached_nowPeriod_fin = 6
+        return Cached_nowPeriod_fin
+    
+    
 
 def title(msg):
     global music
@@ -513,15 +628,23 @@ async def 자비스(ctx, *, arg):
 async def 마이크(ctx, *, arg):
     await ctx.send(content=arg, tts=True)
 
+@bot.command()
+async def 테스트(ctx):
+    YDL_OPTIONS = {'format': 'bestaudio','noplaylist':'True'}
+    FFMPEG_OPTIONS = {'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
+    mp3 = "D:\\Check_Sound_File\\2021-03-29 10-32-45.mkv"
+    vc.play(FFmpegPCMAudio("D:\\Check_Sound_File\\2021-03-29 10-32-45.mkv", **FFMPEG_OPTIONS))
 
-@tasks.loop(seconds=10)
-async def Period_Check(self): #완성....
+@tasks.loop(seconds=1)
+async def Period_Check(self): #완성....    
 
+    nowPeriod_fin = 0
 
     Td_Date = datetime.datetime.today()
     Td_Dotw = Td_Date.weekday()
     Td_hour = Td_Date.hour
     Td_min = Td_Date.minute
+    Td_sec = Td_Date.second
 
     nowPeriod = [] #현재 교시를 저장할 배열
     todSub_Array = [] #각 반의 과목을 저장할 배열
@@ -529,15 +652,54 @@ async def Period_Check(self): #완성....
     channel = bot.get_channel(txtchId) #txtchId에 할당된 채널 아이디를 기준으로 봇이 메세지를 보낼 채널 선정
 
     todSub_Array = Today_Dotw_Checker(Td_Dotw) #현재 요일의 각 반의 과목 배열을 받아와 todSub_Array 배열에 저장
-    nowPeriod = Get_Now_Period(Td_hour, Td_min) #현재 교시를 Td_hour, Td_min값을 기준으로 측정해 nowPeriod배열에 저장
-    nowPeriod_fin = nowPeriod - 1
+    nowPeriod = Get_Now_Period(Td_hour, Td_min, Td_sec) #현재 교시를 Td_hour, Td_min값을 기준으로 측정해 nowPeriod배열에 저장
+    nowPeriod_fin = Period_Changer(nowPeriod) #현재 교시의 값이 배열을 지정할 수 있도록 변환
+    todDotw = Get_Dotw(Td_Dotw) #현재의 Dotw값을 받아서 알맞은 요일을 반환
+
+    
+        
+
     
 
-    print(f"{nowPeriod}교시")
-    embed=discord.Embed(title = f'[{nowPeriod}교시 출첵을 해야할 시간입니다.]', description = f'##{nowPeriod}교시 출첵 알람##', color=0x00ff00)
-    embed.add_field(name=f'[2학년 4반]', value=f'[{todSub_Array[1][nowPeriod_fin]}]', inline=False)
-    embed.add_field(name=f'[2학년 2반]', value=f'[{todSub_Array[0][nowPeriod_fin]}]', inline=False)
-    await channel.send(embed=embed)
+    if nowPeriod != None: #nowPeriod 값이 재 시간이 아닌 경우 None으로 리턴되어 재시간이 아닐시 멈춤
+        
+        print(f"{todDotw}")
+        print(f"{nowPeriod}교시")
+
+        embed=discord.Embed(title = f'[{nowPeriod}교시 출첵을 해야할 시간입니다.]', description = f'##{nowPeriod}교시 출첵 알람##', color=0x00ff00)
+        #embed.add_field(name=f'[김포고 2학년 6반]', value=f'[{todSub_Array[3][nowPeriod_fin]}]', inline=False)
+        embed.add_field(name=f'[사우고 2학년 5반]', value=f'[{todSub_Array[2][nowPeriod_fin]}]', inline=False)
+        embed.add_field(name=f'[사우고 2학년 4반]', value=f'[{todSub_Array[1][nowPeriod_fin]}]', inline=False)
+        embed.add_field(name=f'[사우고 2학년 2반]', value=f'[{todSub_Array[0][nowPeriod_fin]}]', inline=False)
+
+        await channel.send(embed=embed)
+        time.sleep(1)
+        
+
+        #if not vc.is_playing():
+        #    mp3 = "D:\\Check_Sound_File\\2021-03-29 10-32-45.mkv"
+        #    vc.play(FFmpegPCMAudio(mp3, **FFMPEG_OPTIONS))
+        
+        #else:
+        #    await channel.send("이미 재생되고 있습니다!")
+        
+
+    elif nowPeriod == None:
+        pass
+    
+
+    if Td_Dotw == 2: # 수요일과 수요일이 아닌 날의 마지막 교시를 확인하여 루프를 종료하는 구문
+        if nowPeriod_fin == 6:
+            Period_Check.stop()
+
+    elif Td_Dotw != 2:
+        if nowPeriod_fin == 7:
+            Period_Check.stop()
+    
+    else:
+        pass
+
 
 
 bot.run(BOT_TOKEN)
+
