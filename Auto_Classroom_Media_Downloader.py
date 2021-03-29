@@ -5,8 +5,8 @@ from selenium.webdriver.chrome.options import Options
 import time
 import datetime
 
-unfinAssign_Save_dir = "D:\\건보\\동기화\\Naver MYBOX\\C언어반 예습\\Auto_Classroom_Media_Downloader\\UnFinAssign_Save.txt" #미완료과제의 리스트를 저장할 파일의 디렉토리
-chromedriver_dir = "D:\\Chrome_Search_Engine\\chromedriver_win32\\chromedriver.exe" #크롬드라이버 디렉토리
+unfinAssign_Save_dir = "Your_dir" #미완료과제의 리스트를 저장할 파일의 디렉토리
+chromedriver_dir = "Your_dir" #크롬드라이버 디렉토리
 onlineClass_url = "https://classroom.google.com/u/1/h"
 options = webdriver.ChromeOptions()
 driver = webdriver.Chrome(chromedriver_dir, options = options)
@@ -20,8 +20,8 @@ manuBar = "XuQwKc"
 unFinAssign = "R06fGe"
 unlimAssign_Bar = "e2urcc"
 unlimAssign_Period = "ppMo6b.iiWxqc"
-my_google_id = "20sw1014@sawoo.hs.kr"
-my_google_pw = "kunbolee0212@"
+my_google_id = "Your_id"
+my_google_pw = "Your_pw"
 
 del_sec = 1.5
 
