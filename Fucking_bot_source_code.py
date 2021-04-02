@@ -21,8 +21,10 @@ images_file_dir = "D:\\건보\\동기화\\Naver MYBOX\\C언어반 예습\\매크
 yunh_image_dir = images_file_dir + "yunh\\"
 kimki_image_dir = images_file_dir + "kimki\\"
 juns_image_dir = images_file_dir + "juns\\"
+han_image_dir = images_file_dir + "han\\"
+
 bot = commands.Bot(command_prefix='!')
-BOT_TOKEN = 'Your_BOT_TOKEN' #'ODI0NjU3OTY5MTEwODQzNDEy.YFyklQ.5aYtkTh1mZZNT8d65SLr72Uw1zs' #현재 기능 테스트용 봇 토큰 후에 변경 필요
+BOT_TOKEN = 'NzQ3NzE2MjA3OTk3NjE2MTc5.X0S6-w.vRVG4VXlH1MhVxsE0S3h041oMsY' #'ODI0NjU3OTY5MTEwODQzNDEy.YFyklQ.5aYtkTh1mZZNT8d65SLr72Uw1zs' #현재 기능 테스트용 봇 토큰 후에 변경 필요
 
 
 
@@ -270,6 +272,63 @@ def Period_Changer(Current_Period):
     elif nowPeriod == 7:
         Cached_nowPeriod_fin = 6
         return Cached_nowPeriod_fin
+
+def Period_Checker(td_hour, td_min):
+    
+    td_hour_chk = td_hour
+    td_min_chk = td_min
+    Td_Date = datetime.datetime.today()
+    Td_Dotw = Td_Date.weekday()
+
+    get_nowPeriod = []
+
+    if td_hour_chk == 9:
+        if td_min_chk >= 10:
+            get_nowPeriod.append(1)
+            return get_nowPeriod[0]
+        
+    elif td_hour_chk == 10:
+        if td_min_chk >= 10:
+            get_nowPeriod.append(2)
+            return get_nowPeriod[0]
+
+    elif td_hour_chk == 11:
+        if td_min_chk >= 10:
+            get_nowPeriod.append(3)
+            return get_nowPeriod[0]
+
+    elif td_hour_chk == 12:
+        if td_min_chk >= 10:
+            get_nowPeriod.append(10)
+            return get_nowPeriod[0]
+
+    elif td_hour_chk ==  13 or 14:
+        if td_hour_chk == 13:
+            if td_min_chk >= 0:
+                get_nowPeriod.append(4)
+                return get_nowPeriod[0]
+
+        elif td_hour_chk == 14:
+            if td_min_chk >= 0:
+                get_nowPeriod.append(5)
+                return get_nowPeriod[0]
+
+    elif td_hour_chk == 15:
+        if td_min_chk >= 0:
+            if Td_Dotw == 2:
+                get_nowPeriod.append(7) #get_nowPeriod의 값이 7보다 크면 마지막 교시의 알람이 반환
+                return get_nowPeriod[0]
+            else:
+                get_nowPeriod.append(6)
+                return get_nowPeriod[0]
+
+    elif td_hour_chk == 16:
+        if td_min_chk >= 0:
+            get_nowPeriod.append(7)
+            return get_nowPeriod[0]
+
+
+    
  
 def Get_Period_Sub(classNum, td_dotw): #완성, #td_dotw의 값에 따라 해당 과목을 받아옴
     
@@ -304,50 +363,59 @@ def Next_Period_Sub_Send(classNum):
     
     ClassName = f"2학년 {classNum}반"
 
-    Class_Chk = 0
-    if classNum == 2:
-        Class_Chk = 0
-        pass
-    elif classNum == 4:
-        Class_Chk = 1
-        pass
-    elif classNum == 5:
-        Class_Chk = 2
-        pass
+
 
 
     Td_Date = datetime.datetime.today()
     Td_Dotw = Td_Date.weekday()
     Td_hour = Td_Date.hour
     Td_min = Td_Date.minute
-    Td_sec = Td_Date.second
+  
     
 
-    nowPeriod_chk = Get_Now_Period(Td_hour, Td_min, Td_sec) #현재 교시를 받아옴
+    nowPeriod_chk = Period_Checker(int(Td_hour), int(Td_min)) #현재 교시를 받아옴
+    
 
-
-    if nowPeriod_chk == 7:
-        nowPeriod_chk = "last_time"
-        pass
-
-    else:
-        pass
 
     nextSub = Get_Period_Sub(classNum, Td_Dotw) #nowPeriod_chk에대한 nextSub가 반환
 
     
+    print(type(nowPeriod_chk))
 
-        
-    if nowPeriod_chk == "끝":
+
+#    1번째 오류 내용 및 수정
+#    여기에서 <!다음교시 4반>명령어를 입력했을시 nowPeriod_chk = Period_Checker(Td_hour, Td_min)
+#    이상태에서는 Td_hour, Td_min의 값이 str로 입력될 경우 def함수에선 str형식으로는 시간비교가 불가능하기 때문에
+#    위의 코드에서는 int형으로 매핑하여 문제발생 원인을 차단함
+
+#    2번째 오류 내용 및 수정
+#    이전 코드에서는 nowPeriod_chk가 각각 Get_Now_Period와 Period_Changer을 지났는데 nowPeriod_chkrk Get_Now_Period를 지날때
+#    Get_Now_Period 함수는 지정된 시간 정각에 1번만 작동되도록 설계되어서 ==연산자로 구성되어있어 지정시간 정각이 아니면 입력값을 받아도 NoneType의 형식으로 None를 반환한다.
+#    이 때문에 Period_Changer의 if 문을 지날때 변수의 값이 NoneType여서 NoneType는 int형 값과 비교가 불가능 하기 때문에 오류가 발생하였다.
+#    그래서 Period_Checker이라는 새로운 함수를 정의하였고 시간만 정각으로 잡고, 분은 >=연산자를 사용하여 어느시간에 입력해도 다음 시간을 구하는 변수가 출력되도록 작성하였다.
+   
+
+    if nowPeriod_chk <= 6: 
+    
+    
+        embed=discord.Embed(title = f'[##다음교시##]', description = f'##다음교시는?##', color=0x00ff00)
+        embed.add_field(name=f'[사우고 {ClassName}]', value=f'[{nextSub[nowPeriod_chk]}]', inline=False)
+        return embed
+
+    elif nowPeriod_chk == 10:
+
+        embed=discord.Embed(title = f"[##다음교시##]", description = f"##다음교시는?##", color=0x00ff00)
+        embed.add_field(name = f"[사우고{ClassName}]", value = f"[점심시간]", inline=False)
+        return embed
+
+    elif nowPeriod_chk >= 7:
+    
         embed=discord.Embed(title = f'[##다음교시##]', description = f'##다음교시는?##', color=0x00ff00)
         embed.add_field(name=f'[사우고 {ClassName}]', value=f'[끝]', inline=False)
         return embed
-        
-    else:
-        embed=discord.Embed(title = f'[##다음교시##]', description = f'##다음교시는?##', color=0x00ff00)
-        embed.add_field(name=f'[사우고 {ClassName}]', value=f'[{nextSub[Class_Chk][nowPeriod_chk - 1]}]', inline=False)
-        return embed
     
+
+            
 def load_chrome_driver(): ##나중에 호스팅 서버에 봇을 올리게 되면 사용
       
     options = webdriver.ChromeOptions()
@@ -709,14 +777,25 @@ async def 목록재생(ctx):
 
 @bot.command()
 async def 대화목록(ctx): 
-        embed=discord.Embed(title = f'[##대화 가능 목록##]', description = f'##사용방법 : !통돌아 <인자>##', color=0x00ff00)
-        embed.add_field(name=f'[기정이는]', value=f'[기정이의 태그를 보여줍니다]', inline=False)
-        embed.add_field(name=f'[윤행이는]', value=f'[윤행이의 태그를 보여줍니다]', inline=False)
-        embed.add_field(name=f'[기정]', value=f'[기정이의 엽사를 보여줍니다]', inline=False)
-        embed.add_field(name=f'[윤행]', value=f'[윤행이의 엽사를 보여줍니다]', inline=False)
-        embed.add_field(name=f'[유빈]', value=f'[의뢰받은 사진첩입니다.]', inline=False)
+    embed=discord.Embed(title = f'[##대화 가능 목록##]', description = f'##사용방법 : !통돌아 <인자>##', color=0x00ff00)
+    embed.add_field(name=f'[기정이는]', value=f'[기정이의 태그를 보여줍니다]', inline=False)
+    embed.add_field(name=f'[윤행이는]', value=f'[윤행이의 태그를 보여줍니다]', inline=False)
+    embed.add_field(name=f'[기정]', value=f'[기정이의 엽사를 보여줍니다]', inline=False)
+    embed.add_field(name=f'[윤행]', value=f'[윤행이의 엽사를 보여줍니다]', inline=False)
+    embed.add_field(name=f'[유빈]', value=f'[의뢰받은 사진첩입니다.]', inline=False)
 
-        await ctx.send(embed = embed)
+    await ctx.send(embed = embed)
+
+@bot.command()
+async def 시험범위(ctx):
+    embed = discord.Embed(title = f"[##시험범위##]", description = f"##다른 과목 시험범위 제보 받아영##", color=0x00ff00)  
+    embed.add_field(name = f"[문학]", value = f"제보를 기다립니다", inline=False)
+    embed.add_field(name = f"[수학]", value = f"삼각함수 활용 전까지", inline=False)
+    embed.add_field(name = f"[영어]", value = f"1, 2, 3과 본문 / 2021년 3월 모의고사", inline=False)
+    embed.add_field(name = f"[화학]", value = f"1단원 전체", inline=False)
+    embed.add_field(name = f"[물리학]", value = f"1단원 전체", inline=False)
+    embed.add_field(name = f"[지구과학]", value = f"교과서 : ~ 57p \n학습지 : ~ 20p \n선택형 : 18문항(90점), 서술형 1문항 : 10점", inline=False)
+    await ctx.send(embed = embed)
 
 @bot.command()
 async def 사진첩(ctx, *arg):
@@ -816,7 +895,14 @@ async def 사진첩(ctx, *arg):
     elif ctx.channel != unLimit_ch:
         await ctx.send("여기는 다훈이에 의해 명령어를 칠 수 없게 변했어요")
 
-    
+@bot.command()
+async def 테스트(ctx, *arg):
+    testPeriod_Array = list(arg)
+    await ctx.send(f"argument_1 : {testPeriod_Array[0]}, argumanet_2 : {testPeriod_Array[1]}")
+    await ctx.send(f"argument_1_type : {type(testPeriod_Array[0])}, argument_2_type : {type(testPeriod_Array[1])}")
+    print_testVar = Period_Checker(int(testPeriod_Array[0]), int(testPeriod_Array[1]))
+
+    print(print_testVar)
 
 @bot.command()
 async def 통돌아(ctx, *, arg):
@@ -829,6 +915,7 @@ async def 통돌아(ctx, *, arg):
     p5 = "기정"
     p6 = "유빈"
     p7 = "다훈"
+    p8 = "승엽"
     
     
     p10 = "대화목록"
@@ -926,6 +1013,13 @@ async def 통돌아(ctx, *, arg):
                 Rnd_Count = random.randint(0, Image_file_count)
                 await ctx.send(file = discord.File(f'{juns_image_dir}jimage{Rnd_Count}.jpg'))
 
+            elif arg == str(p8):
+                Images_file_list = list(os.listdir(han_image_dir))
+                Image_file_count = len(Images_file_list)
+
+                Rnd_Count = random.randint(0, Image_file_count)
+                await ctx.send(file = discord.File(f"{han_image_dir}hanimage{Rnd_Count}.jpg"))
+
         elif arg == str(p7):
             await ctx.send("너 때문에 내가 격리 당했어...죽일꺼야...")
         elif ctx.channel != unlimit_ch:
@@ -1010,7 +1104,7 @@ async def 주사위놀이(ctx):
 
 
 @bot.command()
-async def 다음교시(ctx, *, arg): #고쳐야함...귀찮다...
+async def 다음교시(ctx, *, arg): #다고침!!!!!!!!!!!!!!!!!!!!!!!! 이거 고치는데 3일 넘게 걸린듯;;
 
     p1 = ["5", "5qks", "5반"]
     p2 = ["4", "4qks", "4반"]
