@@ -24,7 +24,7 @@ juns_image_dir = images_file_dir + "juns\\"
 han_image_dir = images_file_dir + "han\\"
 
 bot = commands.Bot(command_prefix='!')
-BOT_TOKEN = 'NzQ3NzE2MjA3OTk3NjE2MTc5.X0S6-w.vRVG4VXlH1MhVxsE0S3h041oMsY' #'ODI0NjU3OTY5MTEwODQzNDEy.YFyklQ.5aYtkTh1mZZNT8d65SLr72Uw1zs' #현재 기능 테스트용 봇 토큰 후에 변경 필요
+BOT_TOKEN = 'Your_BOT_TOKEN' #'ODI0NjU3OTY5MTEwODQzNDEy.YFyklQ.5aYtkTh1mZZNT8d65SLr72Uw1zs' #현재 기능 테스트용 봇 토큰 후에 변경 필요
 
 
 
