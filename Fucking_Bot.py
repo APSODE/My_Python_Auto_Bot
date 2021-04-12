@@ -26,9 +26,7 @@ juns_image_dir = images_file_dir + "juns\\"
 han_image_dir = images_file_dir + "han\\"
 
 bot = commands.Bot(command_prefix='!')
-BOT_TOKEN = 'ODI4MjY3OTcwNTYwMDAwMDEw.YGnGqA.rnIFyGG8VFpVZs2VLN0oV6UBEiE' #"NzM1MDMzMDgyMTYzMjMyODE5.XxkR3w.U2j3my1AQhsb0WdTgfUACw5jS9A"#현재 자비스 토큰 
-#'ODI4MjY3OTcwNTYwMDAwMDEw.YGnGqA.rnIFyGG8VFpVZs2VLN0oV6UBEiE' 통돌이 토큰
-
+BOT_TOKEN = 'Your_Bot_Token'
 
 
 #=========================================변수============================================
