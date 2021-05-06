@@ -17,16 +17,22 @@ import datetime #
 import os
 import re
 from dotenv import load_dotenv
-
+import json
+import csv
 
 images_file_dir = "D:\\건보\\동기화\\Naver MYBOX\\C언어반 예습\\매크로\\디스코드 봇 만들기\\images_file\\" #"D:\\images_file" #
 yunh_image_dir = images_file_dir + "yunh\\"
 kimki_image_dir = images_file_dir + "kimki\\"
 juns_image_dir = images_file_dir + "juns\\"
 han_image_dir = images_file_dir + "han\\"
-
+leesae_image_dir = images_file_dir + "leesae\\"
 bot = commands.Bot(command_prefix='!')
-BOT_TOKEN = 'Your_Bot_Token'
+TEST_BOT_TOKEN = 'YOUR_BOT_TOKEN'
+WASHER_BOT_TOKEN = 'YOUR_BOT_TOKEN'
+BOT_TOKEN = WASHER_BOT_TOKEN
+
+
+
 
 
 #=========================================변수============================================
@@ -41,6 +47,8 @@ DelContent_List = ["윤탈", "씨발", "윤탈난발", "윤발탈난", "윤난�
 Gather_Evidence_List = ["동규"]
 #Gather_Evidence_List = ["돼지", "뚱", "통통", "뚠뚠", "살찐", "건보", "꿀꿀"]
 Gathered_Evidence_dir = "D:\\건보\\프로그램 관련\\Gathered_Evidence.txt"
+User_Data_dir = "D:\\건보\\동기화\\Naver MYBOX\\C언어반 예습\\매크로\\통돌이\\"
+SHOW_CURRENT_STOCK_LIST = ['롤', '마크', '발로란트', '배그', '오버워치', '나무위키', '산와머니', '순무코인', '히토미', '샘숭전자', '애풀', '세빈왕국', '테수라']
 
 subUrl_List = [] #각 과목의 클래스룸 링크를 받아오는 배열
 
@@ -90,7 +98,38 @@ wenSub_202 = ["진로","수학","선택과목 C","문학","창체","창체"] #�
 thrSub_202 = ["운건","수학","선택과목 B","영어","음감","선택과목 A","일본어"] #목요일
 friSub_202 = ["정보","문학","선택과목 C","수학","일본어","선택과목 B","영어"] #금요일
 #=========================================사우고============================================
-#=========================================변수============================================
+
+#=========================================클래스룸 변수============================================
+
+ClsRoom_URL = "https://classroom.google.com/u/0/h"
+MyClsRoom_ID = "20sw1014@sawoo.hs.kr"
+MyClsRoom_PW = "kunbolee0212@"
+
+Google_Login_ID_Space = "/html[@class='CMgTXc']/body[@id='yDmH0d']/div[@class='H2SoFe LZgQXe TFhTPc']/div[@id='initialView']/div[@class='xkfVF']/div[@class='Aa1VU']/div[@id='view_container']/div[@class='zWl5kd']/div[@class='DRS7Fe bxPAYd k6Zj8d']/div[@class='pwWryf bxPAYd']/div[@class='Wxwduf Us7fWe JhUD8d']/div[@class='WEQkZc']/div[@class='bCAAsb']/form/span/section[@class='aTzEhb ']/div[@class='CxRgyd']/div/div[@class='d2CFce cDSmF cxMOTc']/div[@class='rFrNMe N3Hzgf jjwyfe QBQrY zKHdkd sdJrJc Tyc9J u3bW4e']/div[@class='aCsJod oJeWuf']/div[@class='aXBtI Wic03c']/div[@class='Xb9hP']/input[@id='identifierId']"
+Google_Login_PW_Space = "/html[@class='CMgTXc']/body[@id='yDmH0d']/div[@class='H2SoFe LZgQXe TFhTPc']/div[@id='initialView']/div[@class='xkfVF']/div[@class='Aa1VU']/div[@id='view_container']/div[@class='zWl5kd']/div[@class='DRS7Fe bxPAYd k6Zj8d']/div[@class='pwWryf bxPAYd']/div[@class='Wxwduf Us7fWe JhUD8d']/div[@class='WEQkZc']/div[@class='bCAAsb']/form/span/section[@class='aTzEhb ']/div[@class='CxRgyd']/div/div[@class='SdBahf VxoKGd']/div[@class='eEgeR']/div[@class='W498nc']/div[@class='fdWl7b']/div[@class='hDp5Db']/div[@id='password']/div[@class='aCsJod oJeWuf']/div[@class='aXBtI Wic03c']/div[@class='Xb9hP']/input[@class='whsOnd zHQkBf']"
+Google_Login_NextBtn = "/html[@class='CMgTXc']/body[@id='yDmH0d']/div[@class='H2SoFe LZgQXe TFhTPc']/div[@id='initialView']/div[@class='xkfVF']/div[@class='Aa1VU']/div[@id='view_container']/div[@class='zWl5kd']/div[@class='DRS7Fe bxPAYd k6Zj8d']/div[@class='pwWryf bxPAYd']/div[@class='Wxwduf Us7fWe JhUD8d']/div[@class='zQJV3']/div[@class='dG5hZc']/div[@class='qhFLie']/div[@id='identifierNext']/div[@class='VfPpkd-dgl2Hf-ppHlrf-sM5MNb']/button[@class='VfPpkd-LgbsSe VfPpkd-LgbsSe-OWXEXe-k8QpJ VfPpkd-LgbsSe-OWXEXe-dgl2Hf nCP5yc AjY5Oe DuMIQc qIypjc TrZEUc lw1w4b']/div[@class='VfPpkd-RLmnJb']"
+Google_Login_FinBtn = "/html[@class='CMgTXc']/body[@id='yDmH0d']/div[@class='H2SoFe LZgQXe TFhTPc']/div[@id='initialView']/div[@class='xkfVF']/div[@class='Aa1VU']/div[@id='view_container']/div[@class='zWl5kd']/div[@class='DRS7Fe bxPAYd k6Zj8d']/div[@class='pwWryf bxPAYd']/div[@class='Wxwduf Us7fWe JhUD8d']/div[@class='zQJV3']/div[@class='dG5hZc']/div[@class='qhFLie']/div[@id='passwordNext']/div[@class='VfPpkd-dgl2Hf-ppHlrf-sM5MNb']/button[@class='VfPpkd-LgbsSe VfPpkd-LgbsSe-OWXEXe-k8QpJ VfPpkd-LgbsSe-OWXEXe-dgl2Hf nCP5yc AjY5Oe DuMIQc qIypjc TrZEUc lw1w4b']/div[@class='VfPpkd-RLmnJb']"
+
+
+ClsRoom204 = "/html[@class='zIKt9b W0dUmf']/body[@id='yDmH0d']/div[@class='v7wOcf ZGnOx']/div[@class='kdAl3b']/div[2]/div/ol[@class='JwPp0e']/li[@class='gHz6xd Aopndd rZXyy'][13]/div[@class='Tc9hUd DShyMc-MjgyNDEyNjgwOTU2']/div[@class='R4EiSb']/a[@class='onkcGd ZmqAt']"
+KRLang_Sub = "/html[@class='zIKt9b W0dUmf']/body[@id='yDmH0d']/div[@class='v7wOcf ZGnOx']/div[@class='kdAl3b']/div[2]/div/ol[@class='JwPp0e']/li[@class='gHz6xd Aopndd rZXyy'][9]/div[@class='Tc9hUd DShyMc-MjgyNTI1MjMzODY3']/div[@class='R4EiSb']/a[@class='onkcGd ZmqAt']"
+JPLang_Sub = "/html[@class='zIKt9b W0dUmf']/body[@id='yDmH0d']/div[@class='v7wOcf ZGnOx']/div[@class='kdAl3b']/div[2]/div/ol[@class='JwPp0e']/li[@class='gHz6xd Aopndd rZXyy'][4]/div[@class='Tc9hUd DShyMc-MjgyNDQyNzUwOTkz']/div[@class='R4EiSb']/a[@class='onkcGd ZmqAt']"
+USLang_Sub = "/html[@class='zIKt9b W0dUmf']/body[@id='yDmH0d']/div[@class='v7wOcf ZGnOx']/div[@class='kdAl3b']/div[2]/div/ol[@class='JwPp0e']/li[@class='gHz6xd Aopndd rZXyy'][7]/div[@class='Tc9hUd DShyMc-MjgyNTA4OTIzNTk0']/div[@class='R4EiSb']/a[@class='onkcGd ZmqAt']"
+Math_Sub = "/html[@class='zIKt9b W0dUmf']/body[@id='yDmH0d']/div[@class='v7wOcf ZGnOx']/div[@class='kdAl3b']/div[2]/div/ol[@class='JwPp0e']/li[@class='gHz6xd Aopndd rZXyy'][8]/div[@class='Tc9hUd DShyMc-MjgyNDg2NTI2MjM1']/div[@class='R4EiSb']/a[@class='onkcGd ZmqAt']"
+Chemistry_Sub = "/html[@class='zIKt9b W0dUmf']/body[@id='yDmH0d']/div[@class='v7wOcf ZGnOx']/div[@class='kdAl3b']/div[2]/div/ol[@class='JwPp0e']/li[@class='gHz6xd Aopndd rZXyy'][12]/div[@class='Tc9hUd DShyMc-MjgyNTEwODI5MDk2']/div[@class='R4EiSb']/a[@class='onkcGd ZmqAt']"
+Physics_Sub = "/html[@class='zIKt9b W0dUmf']/body[@id='yDmH0d']/div[@class='v7wOcf ZGnOx']/div[@class='kdAl3b']/div[2]/div/ol[@class='JwPp0e']/li[@class='gHz6xd Aopndd rZXyy'][11]/div[@class='Tc9hUd DShyMc-MjgyNTAyODM4MzU3']/div[@class='R4EiSb']/a[@class='onkcGd ZmqAt']"
+Earth_Sub = "/html[@class='zIKt9b W0dUmf']/body[@id='yDmH0d']/div[@class='v7wOcf ZGnOx']/div[@class='kdAl3b']/div[2]/div/ol[@class='JwPp0e']/li[@class='gHz6xd Aopndd rZXyy'][10]/div[@class='Tc9hUd DShyMc-MjgyNDg0MzE5NDMx']/div[@class='R4EiSb']/a[@class='onkcGd ZmqAt']"
+Exercise_Sub = "/html[@class='zIKt9b W0dUmf']/body[@id='yDmH0d']/div[@class='v7wOcf ZGnOx']/div[@class='kdAl3b']/div[2]/div/ol[@class='JwPp0e']/li[@class='gHz6xd Aopndd rZXyy'][3]/div[@class='Tc9hUd DShyMc-MjgyNTM2OTUzNzE2']/div[@class='R4EiSb']/a[@class='onkcGd ZmqAt']"
+Music_Sub = "/html[@class='zIKt9b W0dUmf']/body[@id='yDmH0d']/div[@class='v7wOcf ZGnOx']/div[@class='kdAl3b']/div[2]/div/ol[@class='JwPp0e']/li[@class='gHz6xd Aopndd rZXyy'][2]/div[@class='Tc9hUd DShyMc-MjgyNDU3MzM1Njk0']/div[@class='R4EiSb']/a[@class='onkcGd ZmqAt']"
+Career_sub = "/html[@class='zIKt9b W0dUmf']/body[@id='yDmH0d']/div[@class='v7wOcf ZGnOx']/div[@class='kdAl3b']/div[2]/div/ol[@class='JwPp0e']/li[@class='gHz6xd Aopndd rZXyy'][6]/div[@class='Tc9hUd DShyMc-MjgzNTQ3MjQ0NTE3']/div[@class='R4EiSb']/a[@class='onkcGd ZmqAt']"
+Infor_Sub = "/html[@class='zIKt9b W0dUmf']/body[@id='yDmH0d']/div[@class='v7wOcf ZGnOx']/div[@class='kdAl3b']/div[2]/div/ol[@class='JwPp0e']/li[@class='gHz6xd Aopndd rZXyy'][5]/div[@class='Tc9hUd DShyMc-MjgyNTMzOTcxMDAy']/div[@class='R4EiSb']/a[@class='onkcGd ZmqAt']"
+
+#ClsRoom_Attendance_Check_X_Path = "/html[@class='zIKt9b W0dUmf mwJvDe']/body[@id='yDmH0d']/div[@class='v7wOcf ZGnOx']/div[4]/div[@class='dbEQNc']/div[@class='v9TZ3c bFjUmb-Tvm9db']/div[@class='qyN25']/div[@class='T4tcpe n0p5v']/div[@class='vraZ7e QRiHXd tLDEHd']/div[@class='QRiHXd']/span/a[@class='tnRfhc etFl5b']/div[@class='QRiHXd']"
+ClsRoom_Attendance_Check_X_Path = "/html[@class='zIKt9b W0dUmf mwJvDe']/body[@id='yDmH0d']/div[@class='v7wOcf ZGnOx']/div/div[@class='dbEQNc']/div[@class='v9TZ3c bFjUmb-Tvm9db']/div[@class='qyN25']/div[@class='T4tcpe n0p5v']/div[@class='vraZ7e QRiHXd tLDEHd']/div[@class='QRiHXd']/span/a[@class='tnRfhc etFl5b']/div[@class='QRiHXd']"
+
+#=========================================클래스룸 변수============================================
+
+#=========================================자가진단 변수============================================
 
 sido_X_path = "/html[@class=' -webkit-']/body/div[@id='modal']/div[@id='modal-popup']/div[@class='modal-wrapper']/div[@class='modal-container']/div[@id='softBoardListLayer']/div[@class='layerContentsWrap']/div[@class='layerSchoolSelectWrap']/table[@class='layerSchoolTable']/tbody/tr[1]/td/select[@id='sidolabel']/option[@value='10']"
 grade_X_path = "/html[@class=' -webkit-']/body/div[@id='modal']/div[@id='modal-popup']/div[@class='modal-wrapper']/div[@class='modal-container']/div[@id='softBoardListLayer']/div[@class='layerContentsWrap']/div[@class='layerSchoolSelectWrap']/table[@class='layerSchoolTable']/tbody/tr[2]/td/select[@id='crseScCode']/option[@value='4']"
@@ -122,12 +161,49 @@ User3_data = ["종다훈", "040617", "1438"]
 User4_data = ["고준혁", "040308", "1224"]
 User5_data = ["정윤호", "040808", "0408"]
 User6_data = ["이건보", "040212", "0212"]
+User7_data = ["두동규", "040216", "2675"]
+User8_data = ["임원경", "040311", "9938"]
+User9_data = ["최은준", "040824", "1234"]
+User10_data = ["이세윤", "040830", "1225"]
+User11_data = ["김성민", "041016", "1016"]
+User12_data = ["김도영", "041122", "6549"]
 
 dotwName = ["토요일", "일요일"]
 
 holiSub = ["주말이당"]
 txtchId = 714475326708908133 #744199524138090501 
 #=========================================변수============================================
+
+def Get_All_User_List(guild):
+    for guild in ctx.guilds:
+        for member in guild.members:
+            yield member.id
+
+            return member
+
+def Checking_Money(USER):
+    with open(f"{User_Data_dir}\\User_Data\\{USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+        READ_USER_DATA = json.load(READ_USER_PROFILE)
+        MONEY = int(READ_USER_DATA['USERMONEY'])
+        READ_USER_PROFILE.close()
+
+        return MONEY
+
+def Checking_Stock(USER, STOCK_NAME):
+    with open(f"{User_Data_dir}\\User_Data\\{USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+        READ_USER_DATA = json.load(READ_USER_PROFILE)
+        STOCK = READ_USER_DATA[f'STOCK_{STOCK_NAME}']
+        READ_USER_PROFILE.close()
+
+        return STOCK
+
+def Checking_Stock_Price(STOCK_NAME):
+    with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "r", encoding = "utf-8") as READ_STOCK_LIST_PROFILE:
+        READ_STOCK_LIST_DATA = json.load(READ_STOCK_LIST_PROFILE)
+        STOCK = READ_STOCK_LIST_DATA['STOCK_PRICE']
+        READ_STOCK_LIST_PROFILE.close()
+
+        return STOCK
 
 def Driver_Get_Class(ClassName):
     try:
@@ -173,6 +249,29 @@ def User_Data_Check(UserName):
         Checked_User_Data = User6_data
         return Checked_User_Data
 
+    elif UserName in User7_data:
+        Checked_User_Data = User7_data
+        return Checked_User_Data
+    
+    elif UserName in User8_data:
+        Checked_User_Data = User8_data
+        return Checked_User_Data
+    
+    elif UserName in User9_data:
+        Checked_User_Data = User9_data
+        return Checked_User_Data
+
+    elif UserName in User10_data:
+        Checked_User_Data = User10_data
+        return Checked_User_Data
+
+    elif UserName in User11_data:
+        Checked_User_Data = User11_data
+        return Checked_User_Data
+
+    elif UserName in User12_data:
+        Checked_User_Data = User12_data
+        return Checked_User_Data
     else:
         return None
 
@@ -180,17 +279,18 @@ def myHealthy_SelfCheck(UserName):
 
 
     global driver 
-    options = webdriver.ChromeOptions()
-    options.add_argument("headless")
-    driver = webdriver.Chrome(chromedriver_dir, options = options)
-    #driver = webdriver.Chrome(chromedriver_dir)
+    #options = webdriver.ChromeOptions()
+    #options.add_argument("headless")
+    #driver = webdriver.Chrome(chromedriver_dir, options = options)
+    driver = webdriver.Chrome(chromedriver_dir)
 
     selfCheck_User_School = ""
     selfCheck_userName = ""
     selfCheck_userBirth = ""
     selfCheck_userPassward = ""
 
-    BestHighSchool = ["고준혁"]
+    BestHighSchool = ["고준혁", "이세윤"]
+    UnyangHighschool = ["두동규"]
     
     User_Data = User_Data_Check(UserName) #User_Data[0] : UserName / User_Data[1] : UserBirth / User_Data[2] : UserPassward
     if User_Data == None:
@@ -205,11 +305,14 @@ def myHealthy_SelfCheck(UserName):
     driver.get(selfCheck_url_Second)
     Del(2)
 
-    if UserName not in BestHighSchool:
-        selfCheck_User_School = "사우고등학교"
+    if UserName in UnyangHighschool:
+        selfCheck_User_School = "운양고등학교"
         pass
     elif UserName in BestHighSchool:
         selfCheck_User_School = "김포제일고등학교"
+        pass
+    else:
+        selfCheck_User_School = "사우고등학교"
         pass
     
     
@@ -253,8 +356,109 @@ def myHealthy_SelfCheck(UserName):
         pass
 
     return finish
-        
 
+def Subject_Checker(subName):
+    if subName == "문학":
+        Sub_X_Path = KRLang_Sub
+        SubNum = 9
+        return Sub_X_Path, SubNum
+
+    elif subName == "수학":
+        Sub_X_Path = Math_Sub
+        SubNum = 8
+        return Sub_X_Path, SubNum
+
+    elif subName == "영어":
+        Sub_X_Path = USLang_Sub
+        SubNum = 7
+        return Sub_X_Path, SubNum
+
+    elif subName == "일본어":
+        Sub_X_Path = JPLang_Sub
+        SubNum = 4
+        return Sub_X_Path, SubNum
+
+    elif subName == "선택과목 A":
+        Sub_X_Path = Chemistry_Sub
+        SubNum = 12
+        return Sub_X_Path, SubNum
+
+    elif subName == "선택과목 B":
+        Sub_X_Path = Physics_Sub
+        SubNum = 11
+        return Sub_X_Path, SubNum
+
+    elif subName == "선택과목 C":
+        Sub_X_Path = Earth_Sub
+        SubNum = 10
+        return Sub_X_Path, SubNum
+
+    elif subName == "음감":
+        Sub_X_Path = Music_Sub
+        SubNum = 2
+        return Sub_X_Path, SubNum
+
+    elif subName == "운건":
+        Sub_X_Path = Exercise_Sub
+        SubNum = 3
+        return Sub_X_Path, SubNum
+
+    elif subName == "진로":
+        Sub_X_Path = Career_sub
+        SubNum = 6
+        return Sub_X_Path, SubNum
+
+    elif subName == "정보":
+        Sub_X_Path = Infor_Sub
+        SubNum = 5
+        return Sub_X_Path, SubNum
+    
+    elif subName == "창체":
+        Sub_X_Path = ClsRoom204
+        SubNum = 13
+        return Sub_X_Path, SubNum
+
+    else:
+        pass
+    
+def Auto_ClsRoom_Loader(Today_Sub, nowPeriod):
+    
+    First_time = time.perf_counter()
+
+    TodSub = []
+    TodSub = Today_Sub
+
+    Period_Use_Array = Period_Changer(nowPeriod)
+
+    nowSub = TodSub[Period_Use_Array]
+    nowSub_X_Path = Subject_Checker(nowSub)[0]
+    SubNum = Subject_Checker(nowSub)[1]
+
+    Normal_Sub_X_Path = f"/html[@class='zIKt9b W0dUmf']/body[@id='yDmH0d']/div[@class='v7wOcf ZGnOx']/div[@class='kdAl3b']/div[2]/div/ol[@class='JwPp0e']/li[@class='gHz6xd Aopndd rZXyy'][{SubNum}]/div[@class='Tc9hUd DShyMc-MjgyNTMzOTcxMDAy']/div[@class='R4EiSb']/a[@class='onkcGd ZmqAt']"
+
+    global driver
+    driver = webdriver.Chrome(chromedriver_dir)
+    
+    driver.get(ClsRoom_URL)
+    Del(1)
+    Driver_Get_X_Path(Google_Login_ID_Space).send_keys(MyClsRoom_ID)
+    Del(1)
+    Driver_Get_X_Path(Google_Login_NextBtn).click()
+    Del(1)
+    Driver_Get_X_Path(Google_Login_PW_Space).send_keys(MyClsRoom_PW)
+    Del(1)
+    Driver_Get_X_Path(Google_Login_FinBtn).click()
+    Del(8)
+    Driver_Get_X_Path(nowSub_X_Path).click()
+    Del(1)
+    #Driver_Get_X_Path(Normal_Sub_X_Path).click() #현재 교시에 해당하는 과목을 클래스룸으로 접속
+    Driver_Get_X_Path(ClsRoom_Attendance_Check_X_Path).click() #행아웃 링크 클릭
+
+    Second_time = time.perf_counter()
+
+    Del_Sec = round(Second_time - First_time, 2)
+
+    return nowSub, Del_Sec
 
 def Today_Dotw_Checker(Date_Of_The_Week1): #오늘의 Dotw값을 받아서 해당 요일의 과목 배열을 각 반의 순서대로 2차원 배열의 형식으로 과목을 리턴
 
@@ -278,7 +482,8 @@ def Today_Dotw_Checker(Date_Of_The_Week1): #오늘의 Dotw값을 받아서 해�
         Second_todSub_204 = monSub_204
         Second_todSub_202 = monSub_202
         #Second_todSub_206_K = monSub_206_K
-
+        #Second_todSub_205_Y
+        #monSub_205_Y tusSub_205_Y wenSub_205_Y thrSub_205_Y firSub_205_Y
 
 
         return Second_todSub_202, Second_todSub_204, Second_todSub_205 #, Second_todSub_206_K
@@ -356,46 +561,64 @@ def Get_Now_Period(td_hour, td_min, td_sec): #Td_hour, Td_min의 값을 기준�
     Get_period = 0
 
     if td_hour == 9:
-        if td_min == 10:
+        if td_min == 10 or 9:
             if td_sec == 0:
                 Get_period = 1 #Get_period에 현재 교시를 추가
                 return Get_period
 
     elif td_hour == 10:
-        if td_min == 10:
+        if td_min == 10 or 9:
             if td_sec == 0:
                 Get_period = 2 #Get_period에 현재 교시를 추가
                 return Get_period
 
     elif td_hour == 11:
-        if td_min == 10:
+        if td_min == 10 or 9:
             if td_sec == 0:
                 Get_period = 3 #Get_period에 현재 교시를 추가
                 return Get_period
 
     elif td_hour == 12:
-        if td_min == 10:
+        if td_min == 10 or 9:
             if td_sec == 0:
                 Get_period = 4 #Get_period에 현재 교시를 추가
                 return Get_period
 
-    elif td_hour == 14:
-        if td_min == 0:
-            if td_sec == 0:
-                Get_period = 5 #Get_period에 현재 교시를 추가
-                return Get_period
+    elif td_hour == 13 or 14:
+        if td_hour == 13:
+            if td_min == 59:
+                if td_sec == 0:
+                    Get_period = 5
+                    return Get_period
+        elif td_hour == 14:
+            if td_min == 0 :
+                if td_sec == 0:
+                    Get_period = 5 #Get_period에 현재 교시를 추가
+                    return Get_period
 
-    elif td_hour == 15:
-        if td_min == 0:
-            if td_sec == 0:
-                Get_period = 6 #Get_period에 현재 교시를 추가
-                return Get_period
+    elif td_hour == 14 or 15:
+        if td_hour == 14:
+            if td_min == 59:
+                if td_sec == 0:
+                    Get_period = 6
+                    return Get_period
+        elif td_hour == 15:
+            if td_min == 0:
+                if td_sec == 0:
+                    Get_period = 6 #Get_period에 현재 교시를 추가
+                    return Get_period
 
-    elif td_hour == 16:
-        if td_min == 0:
-            if td_sec == 0:
-                Get_period = 7 #Get_period에 현재 교시를 추가
-                return Get_period
+    elif td_hour == 15 or 16:
+        if td_hour == 15:
+            if td_min == 59:
+                if td_sec == 0:
+                    Get_period = 7
+                    return Get_period
+        elif td_hour == 16:
+            if td_min == 0:
+                if td_sec == 0:
+                    Get_period = 7 #Get_period에 현재 교시를 추가
+                    return Get_period
     else: #테스트용 코드
         pass
         #Rnd_period = random.randint(1,7)
@@ -499,9 +722,6 @@ def Period_Checker(td_hour, td_min):
             print(type(get_nowPeriod[0]))
             return get_nowPeriod[0]
 
-
-    
- 
 def Get_Period_Sub(classNum, td_dotw): #완성, #td_dotw의 값에 따라 해당 과목을 받아옴
     
     
@@ -578,9 +798,7 @@ def Next_Period_Sub_Send(classNum):
         embed=discord.Embed(title = f'[##다음교시##]', description = f'##다음교시는?##', color=0x00ff00)
         embed.add_field(name=f'[사우고 {ClassName}]', value=f'[끝]', inline=False)
         return embed
-    
-
-            
+              
 def load_chrome_driver(): ##나중에 호스팅 서버에 봇을 올리게 되면 사용
       
     options = webdriver.ChromeOptions()
@@ -592,9 +810,6 @@ def load_chrome_driver(): ##나중에 호스팅 서버에 봇을 올리게 되�
     options.add_argument('--no-sandbox')
 
     return webdriver.Chrome(executable_path=str(os.environ.get('CHROME_EXECUTABLE_PATH')), chrome_options=options)
-
-
-    
 
 def title(msg):
     global music
@@ -662,13 +877,27 @@ def Send_Del_Embed(Del_Message):
 
     return embed
 
+
+
+
 @bot.event
 async def on_ready():
     print("=============")
     print(" 실 행 완 료 ")
     print("=============")
     await bot.change_presence(status=discord.Status.online, activity=discord.Game("노래"))
-    Period_Check.start(txtchId)
+    #Sawoo_Period_Check.start(txtchId)
+    #Stock_Change_Cycle.start(839531082986422292) #test server
+    Stock_Change_Cycle.start(817688404631617546)
+    #Auto_Check.start(txtchId)
+
+    
+    global unlimit_ch
+    global unlimit_ch2
+    unlimit_ch = bot.get_channel(817688404631617546)
+    unlimit_ch2 = bot.get_channel(753557373725179928)
+
+
     #kimkijung.start(txtchId)
 
     #if not discord.opus.is_loaded():
@@ -723,7 +952,6 @@ async def on_ready():
                     await msg.delete()
     """           
 
-    
 
 @bot.command()
 async def 금칙어(ctx):
@@ -735,8 +963,6 @@ async def 금칙어(ctx):
 
     await ctx.send(embed = embed)
     
-    
-
 @bot.command()
 async def 명령어(ctx):
     embed=discord.Embed(title='[이통돌의 기능들]', description='##이통돌 Ver 1.0의 기능##', color=0x00ff00)
@@ -1045,11 +1271,12 @@ async def 사진첩(ctx, *arg):
     picTuple_Conv = list(arg) #<!사진첩 1 2> 입력시 picTuple_Conv[0] = 1, picTuple_Conv[1] = 2 #picTuple_Conv[2]값은 무조건 int형으로 변환 시킬것 str형 들어가면 TypeError발생
     
     unLimit_ch = bot.get_channel(817688404631617546)
+    unlimit_ch2 = bot.get_channel(753557373725179928)
 
     p1 = "윤행이"
     p2 = "기정이"
     
-    if ctx.channel == unLimit_ch:
+    if ctx.channel == unLimit_ch or unlimit_ch2:
             
         if picTuple_Conv[0] == str(p1):
             
@@ -1134,12 +1361,41 @@ async def 사진첩(ctx, *arg):
 
 @bot.command()
 async def 변수테스트(ctx, *arg):
-    testPeriod_Array = list(arg)
-    await ctx.send(f"argument_1 : {testPeriod_Array[0]}, argumanet_2 : {testPeriod_Array[1]}")
-    await ctx.send(f"argument_1_type : {type(testPeriod_Array[0])}, argument_2_type : {type(testPeriod_Array[1])}")
-    print_testVar = Period_Checker(int(testPeriod_Array[0]), int(testPeriod_Array[1]))
+    Command = list(arg)
+    CMD_AUTHOR_USER = ctx.author
+    LIST_COUNTER = len(Command)
 
-    print(print_testVar)
+    if LIST_COUNTER == 1:
+        BUY_STOCK_NAME = str(Command[0])
+        pass
+
+    elif LIST_COUNTER == 2:
+        BUY_STOCK_NAME = str(Command[0])
+        BUY_STOCK_AMOUNT = int(Command[1])
+        pass
+
+    else:
+        await ctx.send("너무 많은 인자가 입력되었거나, 인자가 입력되지 않았습니다.")
+    
+    
+
+    with open(f"{User_Data_dir}\\Stock_List\\{BUY_STOCK_NAME}.json", "r", encoding = "utf-8") as STOCK_LIST_PROFILE:
+        STOCK_LIST_DATA = json.load(STOCK_LIST_PROFILE)
+        STOCK_LIST_PROFILE.close()
+
+    STOCK_NAME = str(STOCK_LIST_DATA['STOCK_NAME'])
+
+    with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as USER_PROFILE:
+        USER_DATA = json.load(USER_PROFILE)
+        USER_PROFILE.close()
+
+    with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "w", encoding = "utf-8") as USER_PROFILE:
+        USER_DATA[f'STOCK_{STOCK_NAME}'] = BUY_STOCK_AMOUNT
+        json.dump(USER_DATA, USER_PROFILE, indent = 4)
+        
+
+    
+
 
 @bot.command()
 async def 통돌아(ctx, arg):
@@ -1153,6 +1409,7 @@ async def 통돌아(ctx, arg):
     p6 = "유빈"
     p7 = "다훈"
     p8 = "승엽"
+    p9 = "세윤이는"
     
     
     p10 = "대화목록"
@@ -1169,11 +1426,15 @@ async def 통돌아(ctx, arg):
 
     if arg == str(p1):
         await ctx.send("싫어")
-        
+
+
     
-    elif arg == str(p4) or str(p5) or str(p6) or str(p7):
+    elif arg ==str(p2) or str(p3) or str(p4) or str(p5) or str(p6) or str(p7) or str(p9):
+        global unlimit_ch
+        global unlimit_ch2
         unlimit_ch = bot.get_channel(817688404631617546)
-        if ctx.channel == unlimit_ch:
+        unlimit_ch2 = bot.get_channel(753557373725179928)
+        if ctx.channel == unlimit_ch or unlimit_ch2:
             if arg == str(p4):
                 Images_file_list = list(os.listdir(yunh_image_dir))
                 Image_file_count = len(Images_file_list)
@@ -1256,42 +1517,1025 @@ async def 통돌아(ctx, arg):
 
                 Rnd_Count = random.randint(0, Image_file_count)
                 await ctx.send(file = discord.File(f"{han_image_dir}hanimage{Rnd_Count}.jpg"))
+            
+            elif arg == str(p9):
+                Images_file_list = list(os.listdir(leesae_image_dir))
+                Image_file_count = len(Images_file_list)
 
+                Rnd_Count = random.randint(0, Image_file_count)
+                await ctx.send(file = discord.File(f"{leesae_image_dir}leesaeimage{Rnd_Count}.jpg"))
+
+            elif arg == str(p2) or str(p3):
+                Text_1 = ["@승엽이 따까리", "ㄱㅗㅏㅇ ㅁㅗ 남편", "윤슬이 ㄴㅍ", "원숭이", "고급 남창", "개떡장애 새끼", "뒤에서 1등급", "오른쪽 땜빵", "기탈난발", "미란이 남편", "조루새끼"]
+                Text_2 = ["@윤행", "원숭이", "틱장애 말기", "개떡장애 새끼", "멀대새끼", "윤 ~ 3", "윤탈난발"]
+                Text = []
+        
+                 
+                if arg == str(p2):
+                    array_len = len(Text_1)
+                    Text = Text_1
+                    pass
+                
+                elif arg == str(p3):
+                    array_len = len(Text_2)
+                    Text = Text_2
+                    pass
+
+
+                Count_s = 0
+                Count_e = array_len #배열 원소 갯수보다 1씩 더한다
+
+                for Count in range(Count_s, Count_e): 
+                    await ctx.send(f"{Text[Count]}")
+                    time.sleep(0.5)
+            
         elif arg == str(p7):
             await ctx.send("너 때문에 내가 격리 당했어...죽일꺼야...")
+        
         elif ctx.channel != unlimit_ch:
             await ctx.send("여기는 다훈이에 의해 명령어를 칠 수 없게 변했어요")
-   
 
 
+#수수료 추가할것
+
+
+@bot.command()
+async def 회원가입(ctx):
+    Resister_USER = ctx.author
+    Resister_USER_ID = Resister_USER.id
+    Welcom_Money = 200000
+    #await ctx.send(f"messgae author = {Resister_USER} / message author id = {Resister_USER_ID}")
+
+    DIR_CHECKER = os.path.exists(f"{User_Data_dir}\\User_Data\\{Resister_USER}.json")
+    if DIR_CHECKER == True:
+        await ctx.send(f"{Resister_USER}님의 데이터는 이미 존재합니다.")
+
+    else:
+        with open(f"{User_Data_dir}\\User_Data\\{Resister_USER}.json", 'a') as RESISTER_USER_DATA:
+            
+            
+            USER_DATA = {"USERNAME": f"{Resister_USER}", "USERID": f"{Resister_USER_ID}", "USERMONEY": Welcom_Money}
+            """
+            USER_DATA = {}
+            USER_DATA["USER"] = []
+            USER_DATA["USER"].append({"USERNAME": f"{Resister_USER}", "USERID": f"{Resister_USER_ID}", "USERMONEY": f"{Welcom_Money}"})
+            """
+            USER_PROFILE = json.dump(USER_DATA, RESISTER_USER_DATA, indent = 4)
+            
+            embed = discord.Embed(title = f"##회원가입 완료##", description = f"회원가입 선물로 20만원이 계좌로 입금되었어요!\n<!자산>으로 확인해보세요!")
+            await ctx.send(embed = embed)
+
+@bot.command()
+async def 자산(ctx, arg: discord.Member = None):
+    #SHOW_CURRENT_STOCK_LIST = ['롤', '마크', '발로란트', '배그', '오버워치']
+    CMD_AUTHOR_USER = ctx.author
+    USER_NAME = str(arg)
+    
+    STOCK_LIST_COUNTER = len(SHOW_CURRENT_STOCK_LIST)
+    SHOW_STOCK_LIST = []
+    #await ctx.send(f"명령어 입력한 사람 : {CMD_AUTHOR_USER}")
+    if not arg:
+        try:
+
+            with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+                READ_USER_DATA = json.load(READ_USER_PROFILE)
+                READ_USER_PROFILE.close()
+
+            USER_MONEY = READ_USER_DATA['USERMONEY']
+                
+            embed = discord.Embed(title = f"[##현재 자산##]", description = f"")
+            embed.add_field(name = f"[보유 현금]", value = f"{USER_MONEY}원", inline = False)
+            #embed.add_field(indax = "STOCK", name = f"[보유 주식]", value = f"", inline = False)
+            for STOCK_COUNT in range(STOCK_LIST_COUNTER):
+                STOCK_NAME_BH = SHOW_CURRENT_STOCK_LIST[STOCK_COUNT]
+                STOCK_NAME_CHECK = f"STOCK_{STOCK_NAME_BH}"
+                if STOCK_NAME_CHECK in READ_USER_DATA:
+                    SHOW_STOCK_LIST.append(STOCK_NAME_BH) #뒤에 주식 이름
+
+            
+            SHOW_STOCK_LIST_COUNTER = len(SHOW_STOCK_LIST)
+
+            for STOCK_COUNT in range(SHOW_STOCK_LIST_COUNTER):
+                STOCK_NAME = SHOW_STOCK_LIST[STOCK_COUNT]
+                STOCK_NAME_CHECK = f'STOCK_{STOCK_NAME}'
+                if STOCK_NAME_CHECK in READ_USER_DATA:
+                    USER_OWN_STOCK_AMOUNT = READ_USER_DATA[STOCK_NAME_CHECK]
+                    if USER_OWN_STOCK_AMOUNT != 0:
+                        embed.add_field(name = f"{STOCK_NAME}  ", value = f"{USER_OWN_STOCK_AMOUNT}주", inline = True)
+                    else:
+                        pass
+            embed.set_footer(text = f"{CMD_AUTHOR_USER}")
+            await ctx.send(embed = embed)
+            
+
+
+            
         
+        except:
+            await ctx.send(f"[{USER_NAME}]님의 데이터가 존재하지 않습니다.")
+
+    else:
+        try:
+            with open(f"{User_Data_dir}\\User_Data\\{USER_NAME}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+                READ_USER_DATA = json.load(READ_USER_PROFILE)
+                READ_USER_PROFILE.close()
+
+            USER_MONEY = READ_USER_DATA['USERMONEY']
+                
+            embed = discord.Embed(title = f"[##현재 자산##]", description = f"")
+            embed.add_field(name = f"[보유 현금]", value = f"{USER_MONEY}원", inline = False)
+            #embed.add_field(indax = "STOCK", name = f"[보유 주식]", value = f"", inline = False)
+            for STOCK_COUNT in range(STOCK_LIST_COUNTER):
+                STOCK_NAME_BH = SHOW_CURRENT_STOCK_LIST[STOCK_COUNT]
+                STOCK_NAME_CHECK = f"STOCK_{STOCK_NAME_BH}"
+                if STOCK_NAME_CHECK in READ_USER_DATA:
+                    SHOW_STOCK_LIST.append(STOCK_NAME_BH) #뒤에 주식 이름
+
+            
+            SHOW_STOCK_LIST_COUNTER = len(SHOW_STOCK_LIST)
+
+            for STOCK_COUNT in range(SHOW_STOCK_LIST_COUNTER):
+                STOCK_NAME = SHOW_STOCK_LIST[STOCK_COUNT]
+                STOCK_NAME_CHECK = f'STOCK_{STOCK_NAME}'
+                if STOCK_NAME_CHECK in READ_USER_DATA:
+                    USER_OWN_STOCK_AMOUNT = READ_USER_DATA[STOCK_NAME_CHECK]
+                    if USER_OWN_STOCK_AMOUNT != 0:
+                        embed.add_field(name = f"{STOCK_NAME}  ", value = f"{USER_OWN_STOCK_AMOUNT}주", inline = True)
+                    else:
+                        pass
+
+            embed.set_footer(text = f"{USER_NAME}")
+            await ctx.send(embed = embed)
+            
+
+
+            
+        
+        except:
+            await ctx.send(f"[{USER_NAME}]님의 데이터가 존재하지 않습니다.")
+
+@bot.command()
+async def 베팅(ctx, arg):
+    
+    Money = int(arg)
+    CMD_AUTHOR_USER = ctx.author
+    USER_MONEY = int(Checking_Money(CMD_AUTHOR_USER))
+    #await ctx.send(f"USER_MONEY : {USER_MONEY}")
+    if Money >= 500:
+
+        if Money <= int(USER_MONEY):
+            Rnd = random.randint(1, 10)
+            #await ctx.send(f"Rnd : {Rnd}")
+
+            if Rnd == 1:
+                Rnd_val = 2
+                pass
+
+            elif Rnd == 2:
+                Rnd_val = 2
+                pass
+
+            elif Rnd == 3:
+                Rnd_val = 3
+                pass
+            
+            elif Rnd == 4:
+                Rnd_val = 3
+                pass
+
+            else:
+                Rnd_val = 0
+                pass
+
+            if Rnd_val == 2: #2배
+            #if Rnd != 0:
+                with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r") as EDIT_USER_PROFILE:
+                    EDIT_USER_DATA = json.load(EDIT_USER_PROFILE)
+                    EDIT_USER_PROFILE.close()
+
+                EDIT_USER_DATA['USERMONEY'] = USER_MONEY + Money
+
+                with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "w") as EDIT_USER_PROFILE:
+                    json.dump(EDIT_USER_DATA, EDIT_USER_PROFILE, indent = 4)
+                    EDIT_USER_PROFILE.close()
+
+
+                await ctx.send("2배! 운이 좋네요!")
+
+                Del(1)
+
+                MONEY = Checking_Money(CMD_AUTHOR_USER)
+                embed = discord.Embed(title = f"", descripton = f"")
+                embed.add_field(name = f"보유자산 : ", value = f"{MONEY}원", inline = True)
+                embed.set_footer(text = CMD_AUTHOR_USER)
+        
+        
+                await ctx.send(embed = embed)
+
+            elif Rnd_val == 3:
+                with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r") as EDIT_USER_PROFILE:
+                    EDIT_USER_DATA = json.load(EDIT_USER_PROFILE)
+                    EDIT_USER_PROFILE.close()
+
+                EDIT_USER_DATA['USERMONEY'] = USER_MONEY + (Money * 2)
+
+                with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "w") as EDIT_USER_PROFILE:
+                    json.dump(EDIT_USER_DATA, EDIT_USER_PROFILE, indent = 4)
+                    EDIT_USER_PROFILE.close()
+
+                await ctx.send("3배! 운이 좋네요!")
+
+                Del(1)
+
+                MONEY = Checking_Money(CMD_AUTHOR_USER)
+                embed = discord.Embed(title = f"", descripton = f"")
+                embed.add_field(name = f"보유자산 : ", value = f"{MONEY}원", inline = True)
+                embed.set_footer(text = CMD_AUTHOR_USER)
+        
+        
+                await ctx.send(embed = embed)
+
+            elif Rnd_val == 0:
+                with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r") as EDIT_USER_PROFILE:
+                    EDIT_USER_DATA = json.load(EDIT_USER_PROFILE)
+                    EDIT_USER_PROFILE.close()
+
+                EDIT_USER_DATA['USERMONEY'] = USER_MONEY - Money
+
+                with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "w") as EDIT_USER_PROFILE:
+                    json.dump(EDIT_USER_DATA, EDIT_USER_PROFILE, indent = 4)
+                    EDIT_USER_PROFILE.close()
+
+                await ctx.send("아쉽지만 배팅금액은 제가 가져갈께요~")
+
+                Del(1)
+
+                MONEY = Checking_Money(CMD_AUTHOR_USER)
+                embed = discord.Embed(title = f"", descripton = f"")
+                embed.add_field(name = f"보유자산 : ", value = f"{MONEY}원", inline = True)
+                embed.set_footer(text = CMD_AUTHOR_USER)
+        
+        
+                await ctx.send(embed = embed)
+
+        elif Money > int(USER_MONEY):
+            await ctx.send(f"보유하고 있는 자산보다 더 많은 돈은 배팅할 수 없어요! \n{USER_MONEY}이하로 배팅해주세요!")
+    else:
+        await ctx.send("베팅금액은 최소 500원 이상부터 입니다.")   
+
+@bot.command()
+async def 지급(ctx, *arg):
+    ENTERED_DATA = list(arg)
+    CMD_AUTHOR_USER = ctx.author
+    CMD_AUTHOR_USER_ID = CMD_AUTHOR_USER.id
+    ADMIN_ID = 688705421082361856
+    
+    BLANK_CHECK = len(ENTERED_DATA)
+    #await ctx.send(f"BLANK_CHECK : {BLANK_CHECK}")
+    
+    if BLANK_CHECK == 2:
+        RECIPIENTER = ENTERED_DATA[0]
+        SENDMONEY = int(ENTERED_DATA[1])
+        pass
+
+    elif BLANK_CHECK == 3:
+        RECIPIENTER = str(ENTERED_DATA[0] + " " + ENTERED_DATA[1])
+        SENDMONEY = int(ENTERED_DATA[2])
+        pass
+
+    USER_FILE_CHECK = os.path.exists(f"{User_Data_dir}\\User_Data\\{RECIPIENTER}.json")
+
+    if ADMIN_ID == CMD_AUTHOR_USER_ID:
+        if USER_FILE_CHECK == True:
+            with open(f"{User_Data_dir}\\User_Data\\{RECIPIENTER}.json", "r") as RECIPIENT_USER_PROFILE:
+                RECIPIENT_USER_DATA = json.load(RECIPIENT_USER_PROFILE)
+                RECIPIENT_USER_PROFILE.close()
+
+            EXISITING_USERMONEY = RECIPIENT_USER_DATA['USERMONEY'] 
+            RECIPIENT_USER_DATA['USERMONEY'] = int(EXISITING_USERMONEY) + int(SENDMONEY)
+
+            with open(f"{User_Data_dir}\\User_Data\\{RECIPIENTER}.json", "w") as RECIPIENT_USER_PROFILE:
+                json.dump(RECIPIENT_USER_DATA, RECIPIENT_USER_PROFILE, indent = 4)
+                RECIPIENT_USER_PROFILE.close()
+
+            MONEY = Checking_Money(RECIPIENTER)
+            embed = discord.Embed(title = f"", descripton = f"")
+            embed.add_field(name = f"보유자산 : ", value = f"{MONEY}원", inline = True)
+            embed.set_footer(text = f"{RECIPIENTER}")
+    
+    
+            await ctx.send(embed = embed)
+
+        else:
+            await ctx.send(f"[{RECIPIENTER}]님의 데이터를 찾을수 없습니다. ")
+    
+
+    else:
+        await ctx.send("이 명령어를 사용할 권한이 없습니다.")
+
+@bot.command()
+async def 수정(ctx, *arg):
+    ENTERED_DATA = list(arg)
+    CMD_AUTHOR_USER = ctx.author
+    CMD_AUTHOR_USER_ID = CMD_AUTHOR_USER.id
+    ADMIN_ID = 688705421082361856
+    
+    BLANK_CHECK = len(ENTERED_DATA)
+    #await ctx.send(f"BLANK_CHECK : {BLANK_CHECK}")
+    
+    if BLANK_CHECK == 2:
+        RECIPIENTER = ENTERED_DATA[0]
+        EDITEDMONEY = int(ENTERED_DATA[1])
+        pass
+
+    elif BLANK_CHECK == 3:
+        RECIPIENTER = str(ENTERED_DATA[0] + " " + ENTERED_DATA[1])
+        EDITEDMONEY = int(ENTERED_DATA[2])
+        pass
+
+    USER_FILE_CHECK = os.path.exists(f"{User_Data_dir}\\User_Data\\{RECIPIENTER}.json")
+
+    if ADMIN_ID == CMD_AUTHOR_USER_ID:
+        if USER_FILE_CHECK == True:
+            with open(f"{User_Data_dir}\\User_Data\\{RECIPIENTER}.json", "r") as RECIPIENT_USER_PROFILE:
+                RECIPIENT_USER_DATA = json.load(RECIPIENT_USER_PROFILE)
+                RECIPIENT_USER_PROFILE.close()
+
+            RECIPIENT_USER_DATA['USERMONEY'] = EDITEDMONEY
+            
+
+            with open(f"{User_Data_dir}\\User_Data\\{RECIPIENTER}.json", "w") as RECIPIENT_USER_PROFILE:
+                json.dump(RECIPIENT_USER_DATA, RECIPIENT_USER_PROFILE, indent = 4)
+                RECIPIENT_USER_PROFILE.close()
+
+            MONEY = Checking_Money(RECIPIENTER)
+            embed = discord.Embed(title = f"", descripton = f"")
+            embed.add_field(name = f"보유자산 : ", value = f"{MONEY}원", inline = True)
+            embed.set_footer(text = f"{RECIPIENTER}")
+    
+    
+            await ctx.send(embed = embed)
+
+        else:
+            await ctx.send(f"[{RECIPIENTER}]님의 데이터를 찾을수 없습니다. ")
+    
+
+    else:
+        await ctx.send("이 명령어를 사용할 권한이 없습니다.")
+
+@bot.command()
+async def 송금(ctx, *arg):
+    ENTERED_DATA = list(arg)
+    CMD_AUTHOR_USER = ctx.author
+    CMD_AUTHOR_USER_ID = CMD_AUTHOR_USER.id
+    AUTHOR_MONEY = int(Checking_Money(CMD_AUTHOR_USER))
+    
+    BLANK_CHECK = len(ENTERED_DATA)
+    #await ctx.send(f"BLANK_CHECK : {BLANK_CHECK}")
+    
+    if BLANK_CHECK == 2:
+        RECIPIENTER = ENTERED_DATA[0]
+        SENDMONEY = int(ENTERED_DATA[1])
+        pass
+
+    elif BLANK_CHECK == 3:
+        RECIPIENTER = str(ENTERED_DATA[0] + " " + ENTERED_DATA[1])
+        SENDMONEY = int(ENTERED_DATA[2])
+        pass
+
+    USER_FILE_CHECK = os.path.exists(f"{User_Data_dir}\\User_Data\\{RECIPIENTER}.json")
 
     
-    elif arg == str(p2) or str(p3):
-        Text_1 = ["@승엽이 따까리", "ㄱㅗㅏㅇ ㅁㅗ 남편", "윤슬이 ㄴㅍ", "원숭이", "고급 남창", "개떡장애 새끼", "뒤에서 1등급", "오른쪽 땜빵", "기탈난발"]
-        Text_2 = ["@윤행", "원숭이", "틱장애 말기", "개떡장애 새끼", "멀대새끼", "윤 ~ 3", "윤탈난발"]
-        Text = []
+    if SENDMONEY <= AUTHOR_MONEY:
 
-        if arg == str(p2):
-            array_len = len(Text_1)
-            Text = Text_1
+        if USER_FILE_CHECK == True:
+            #============================송금인 돈 데이터 수정============================================
+            with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r") as AUTHOR_USER_PROFILE:
+                AUTHOR_USER_DATA = json.load(AUTHOR_USER_PROFILE)
+                AUTHOR_USER_PROFILE.close()
+
+            EXISITING_USERMONEY = AUTHOR_USER_DATA['USERMONEY']
+            AUTHOR_USER_DATA['USERMONEY'] = int(EXISITING_USERMONEY) - int(SENDMONEY)
+
+            with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "w") as AUTHOR_USER_PROFILE:
+                json.dump(AUTHOR_USER_DATA, AUTHOR_USER_PROFILE, indent = 4)
+                AUTHOR_USER_PROFILE.close()
+            #============================송금인 돈 데이터 수정============================================
+            #============================수신인 돈 데이터 수정============================================
+            with open(f"{User_Data_dir}\\User_Data\\{RECIPIENTER}.json", "r") as RECIPIENT_USER_PROFILE:
+                RECIPIENT_USER_DATA = json.load(RECIPIENT_USER_PROFILE)
+                RECIPIENT_USER_PROFILE.close()
+
+            EXISITING_USERMONEY = RECIPIENT_USER_DATA['USERMONEY'] 
+            RECIPIENT_USER_DATA['USERMONEY'] = int(EXISITING_USERMONEY) + int(SENDMONEY)
+
+            with open(f"{User_Data_dir}\\User_Data\\{RECIPIENTER}.json", "w") as RECIPIENT_USER_PROFILE:
+                json.dump(RECIPIENT_USER_DATA, RECIPIENT_USER_PROFILE, indent = 4)
+                RECIPIENT_USER_PROFILE.close()
+            #============================수신인 돈 데이터 수정============================================
+
+            AUTHOR_MONEY = Checking_Money(CMD_AUTHOR_USER)
+            RECIPIENTER_MONEY = Checking_Money(RECIPIENTER)
+            embed = discord.Embed(title = f"", descripton = f"")
+            embed.add_field(name = f"{CMD_AUTHOR_USER}님의 자산 : ", value = f"{AUTHOR_MONEY}원", inline = False)
+            embed.add_field(name = f"{RECIPIENTER}님의 자산 : ", value = f"{RECIPIENTER_MONEY}원", inline = False)
+            embed.set_footer(text = f"송금액 : {SENDMONEY}원")
+
+
+            await ctx.send(embed = embed)
+
+        else:
+            await ctx.send(f"[{RECIPIENTER}]님의 데이터를 찾을수 없습니다. ")
+    
+    elif SENDMONEY > AUTHOR_MONEY:
+        await ctx.send(f"[{SENDMONEY}원]은 현재 당신의 자산인 [{AUTHOR_MONEY}원]보다 많습니다.\n송금액을 줄여주세요.")
+
+    else:
+        await ctx.send(f"입력이 잘못되었어요. 다시 한 번 입력해주세요!")
+
+@bot.command()
+async def 주식(ctx, *arg):
+    try:    
+        
+        Command = list(arg)
+        CMD_AUTHOR_USER = ctx.author
+        OBJ_COUNT = len(Command)
+        FUNC_NAME = Command[0]
+        #SHOW_CURRENT_STOCK_LIST = ['롤', '마크', '발로란트', '배그', '오버워치']
+
+        if OBJ_COUNT == 2:
+            OBJ_ONE = Command[1]#STOCK_NAME
             pass
         
-        elif arg == str(p3):
-            array_len = len(Text_2)
-            Text = Text_2
+        elif OBJ_COUNT == 3:
+            OBJ_ONE = Command[1]
+            OBJ_TWO = Command[2]#BUY_AMOUNT / SELL_AMOUNT
             pass
+        
+        
 
-        Count_s = 0
-        Count_e = array_len #배열 원소 갯수보다 1씩 더한다
+        if FUNC_NAME == "목록":
+            STOCK_LIST_COUNTER = len(SHOW_CURRENT_STOCK_LIST)
+            embed = discord.Embed(title = f"", description = "")
+            for STOCK_LIST_COUNT in range(STOCK_LIST_COUNTER):
+                STOCK_NAME = str(SHOW_CURRENT_STOCK_LIST[STOCK_LIST_COUNT])
+                STOCK_PRICE = Checking_Stock_Price(STOCK_NAME)
+                embed.add_field(name = f"{STOCK_NAME}", value = f"{STOCK_PRICE}원", inline = True)
+            
+            
+            embed.set_footer(text = f"현재 구매 가능한 주식 목록입니다.")
 
-        for Count in range(Count_s, Count_e): 
-            await ctx.send(f"{Text[Count]}")
-            time.sleep(0.5)
+            await ctx.send(embed = embed)
+
+        elif FUNC_NAME == "수수료":
+            global REAL_SELL_COMMISSION
+            SELL_COMMISSION = round(float((int(OBJ_ONE) / 100) * 100), 2)
+            REAL_SELL_COMMISSION = round(float(int(OBJ_ONE) / 100), 2)
+
+            await ctx.send(f"수수료 설정 완료\n현재 수수료 : {SELL_COMMISSION}%")
+
+
+
+        elif FUNC_NAME == "가격":
+            STOCK_NAME = str(OBJ_ONE)
+            STOCK_LIST_CHECK = os.path.exists(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json")
+
+
+            if STOCK_LIST_CHECK == True:
+                with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "r", encoding = "utf-8") as STOCK_LIST_PROFILE:
+                    STOCK_LIST_DATA = json.load(STOCK_LIST_PROFILE)
+                    STOCK_LIST_PROFILE.close()
+
+                STOCK_PRICE = int(STOCK_LIST_DATA['STOCK_PRICE'])
+
+                await ctx.send(f"{STOCK_NAME}의 가격 : {STOCK_PRICE}원")
+
+        elif FUNC_NAME == "구매":
+            try:
+                STOCK_NAME = str(OBJ_ONE)
+                BUY_AMOUNT = int(OBJ_TWO)
+
+                STOCK_LIST_CHECK = os.path.exists(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json")
+
+                if STOCK_LIST_CHECK == True:
+                    with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "r", encoding = "utf-8") as BUY_STOCK_PROFILE:
+                        BUY_STOCK_DATA = json.load(BUY_STOCK_PROFILE)
+                        BUY_STOCK_PROFILE.close()
+
+                    STOCK_PRICE = int(BUY_STOCK_DATA['STOCK_PRICE'])
+                    TOTAL_PRICE = int(STOCK_PRICE) * int(BUY_AMOUNT)
+
+                    with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as BUYER_PROFILE:
+                        BUYER_DATA = json.load(BUYER_PROFILE)
+                        BUYER_PROFILE.close()
+
+                    BUYER_MONEY = BUYER_DATA['USERMONEY']
+                    
+                    if TOTAL_PRICE <= BUYER_MONEY: #USERDATA의 USERMONEY가 충분하다면 밑의 코드 실행
+
+                        with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "r", encoding = "utf-8") as BUY_STOCK_PROFILE:
+                            BUY_STOCK_DATA = json.load(BUY_STOCK_PROFILE)
+                            BUY_STOCK_PROFILE.close()
+
+                        STOCK_NAME = str(BUY_STOCK_DATA['STOCK_NAME'])
+
+                        with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as BUYER_PROFILE:
+                            BUYER_DATA = json.load(BUYER_PROFILE)
+                            BUYER_PROFILE.close()
+
+                        USER_OWN_STOCK_CHECK = f'STOCK_{STOCK_NAME}'
+
+                        
+                        if USER_OWN_STOCK_CHECK in BUYER_DATA:
+                            EXISITING_USER_STOCK = BUYER_DATA[f'STOCK_{str(STOCK_NAME)}']
+
+                        else:
+                            EXISITING_USER_STOCK = 0
+
+                        with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "w", encoding = "utf-8") as BUYER_PROFILE:
+                            BUYER_DATA['USERMONEY'] = int(BUYER_MONEY) - int(TOTAL_PRICE)
+                            BUYER_DATA[f'STOCK_{STOCK_NAME}'] = BUY_AMOUNT + EXISITING_USER_STOCK
+                            json.dump(BUYER_DATA, BUYER_PROFILE, indent = 4)
+
+                        
+                        CURRENT_USER_MONEY = Checking_Money(CMD_AUTHOR_USER)
+                        CURRENT_USER_STOCK = Checking_Stock(CMD_AUTHOR_USER, STOCK_NAME)
+
+                        embed = discord.Embed(title = f"", descripton = f"")
+                        embed.add_field(name = f"보유자산 : ", value = f"{CURRENT_USER_MONEY}원", inline = True)
+                        embed.add_field(name = f"{STOCK_NAME} 보유 주식 : ", value = f"{CURRENT_USER_STOCK}주", inline = True)
+                        embed.set_footer(text = CMD_AUTHOR_USER)                                
+                        await ctx.send(embed = embed)
+
+                    else:
+                        await ctx.send(f"총 구매 금액[{TOTAL_PRICE}원]은 현재 당신의 소지 금액 [{BUYER_MONEY}원]보다 큽니다")
+            except:
+                await ctx.send("입력받은 인자의 갯수가 너무 많거나 부족합니다.")       
+
+        elif FUNC_NAME == "판매":
+            try:
+
+                STOCK_NAME = str(OBJ_ONE)
+                SELL_AMOUNT = int(OBJ_TWO)
+
+                STOCK_LIST_CHECK = os.path.exists(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json")
+
+                if STOCK_LIST_CHECK == True:
+                    with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "r", encoding = "utf-8") as SELL_STOCK_PROFILE:
+                        SELL_STOCK_DATA = json.load(SELL_STOCK_PROFILE)
+                        SELL_STOCK_PROFILE.close()
+
+                    STOCK_PRICE = int(SELL_STOCK_DATA['STOCK_PRICE'])
+                    TOTAL_PRICE = int(STOCK_PRICE) * int(SELL_AMOUNT)
+
+                    SELLER_MONEY = Checking_Money(CMD_AUTHOR_USER)
+                    
+                    
+                    CURRENT_USER_STOCK_CHECK = Checking_Stock(CMD_AUTHOR_USER, STOCK_NAME)
+                    
+                    if SELL_AMOUNT <= CURRENT_USER_STOCK_CHECK:
+
+                        with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "r", encoding = "utf-8") as SELL_STOCK_PROFILE:
+                            SELL_STOCK_DATA = json.load(SELL_STOCK_PROFILE)
+                            SELL_STOCK_PROFILE.close()
+
+                        STOCK_NAME = str(SELL_STOCK_DATA['STOCK_NAME'])
+
+                        with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as SELLER_PROFILE:
+                            SELLER_DATA = json.load(SELLER_PROFILE)
+                            SELLER_PROFILE.close()
+
+                        USER_OWN_STOCK_CHECK = f'STOCK_{STOCK_NAME}'
+
+                        
+                        if USER_OWN_STOCK_CHECK in SELLER_DATA:
+                            EXISITING_USER_STOCK = SELLER_DATA[f'STOCK_{STOCK_NAME}']
+                            pass
+
+                        else:
+                            EXISITING_USER_STOCK = 0
+                            pass
+
+
+                        with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "w", encoding = "utf-8") as SELLER_PROFILE:
+                            SELLER_DATA['USERMONEY'] = int(SELLER_MONEY) + int(TOTAL_PRICE)
+                            SELLER_DATA[f'STOCK_{STOCK_NAME}'] = EXISITING_USER_STOCK - SELL_AMOUNT
+                            json.dump(SELLER_DATA, SELLER_PROFILE, indent = 4)
+
+                    
+                        CURRENT_USER_MONEY = Checking_Money(CMD_AUTHOR_USER)
+                        CURRENT_USER_STOCK = Checking_Stock(CMD_AUTHOR_USER, STOCK_NAME)
+
+                        embed = discord.Embed(title = f"", descripton = f"")
+                        embed.add_field(name = f"보유자산 : ", value = f"{CURRENT_USER_MONEY}원", inline = True)
+                        embed.add_field(name = f"{STOCK_NAME} 보유 주식 : ", value = f"{CURRENT_USER_STOCK}주", inline = True)
+                        embed.set_footer(text = CMD_AUTHOR_USER)                                
+                        await ctx.send(embed = embed)
+
+                    elif SELL_AMOUNT > CURRENT_USER_STOCK_CHECK:
+                        await ctx.send(f"현재 당신이 보유하고 있는 [{CURRENT_USER_STOCK_CHECK}주]보다\n입력된 값이 큽니다. 다시 입력해주세요.")
+                else:
+                    await ctx.send("해당 주식의 데이터가 없거나 입력된 데이터가 잘못되었습니다.")
+            except:
+                await ctx.send("입력받은 인자의 갯수가 너무 많거나 부족합니다.")       
+
+    except:
+        error_msg = await ctx.send("명령어가 잘못되었습니다. 다시 입력하여주세요")
+        Del(5)
+        await error_msg.delete()
+
+@bot.command()
+async def 구제금융(ctx):
+    CMD_AUTHOR_USER = ctx.author
+    QUALIFICATION = 0
+
+    with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+        READ_USER_DATA = json.load(READ_USER_PROFILE)
+        READ_USER_PROFILE.close()
+
+    POOR_OWN_MONEY = READ_USER_DATA["USERMONEY"]
+    SHOW_CURRENT_STOCK_LIST_COUNTER = len(SHOW_CURRENT_STOCK_LIST)
+
+    for STOCK_CHECK_COUNT in range(SHOW_CURRENT_STOCK_LIST_COUNTER):
+        STOCK_OWN_CHECK = SHOW_CURRENT_STOCK_LIST[STOCK_CHECK_COUNT]
+        STOCK_CHECK_NAME = f"STOCK_{STOCK_OWN_CHECK}"
+
+        with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+            READ_USER_DATA = json.load(READ_USER_PROFILE)
+            READ_USER_PROFILE.close()
+
+        if STOCK_CHECK_NAME in READ_USER_DATA:
+            QUALIFICATION = QUALIFICATION + 1
+            
+
+        elif STOCK_CHECK_NAME not in READ_USER_DATA:
+            QUALIFICATION = QUALIFICATION + 0
+            
+
+    if QUALIFICATION <= 0:
+        if POOR_OWN_MONEY <= 10000:
+            with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "w", encoding = "utf-8") as WRITE_USER_PROFILE:
+                READ_USER_DATA["USERMONEY"] = POOR_OWN_MONEY + 100000
+                if "SAVE_MONEY_APPLICATION_COUNT" in READ_USER_DATA:
+                    READ_USER_DATA["SAVE_MONEY_APPLICATION_COUNT"] = int(READ_USER_DATA["SAVE_MONEY_APPLICATION_COUNT"]) + 1
+                else:
+                    READ_USER_DATA["SAVE_MONEY_APPLICATION_COUNT"] = 1
+
+                json.dump(READ_USER_DATA, WRITE_USER_PROFILE, indent = 4)
+        
+        else:
+            await ctx.send("당신은 구제금융을 받을만한 사람이 아닙니다.")
+    else:
+        await ctx.send("당신은 구제금융을 받을만한 사람이 아닙니다.")
+
+    MONEY = Checking_Money(CMD_AUTHOR_USER)
+    embed = discord.Embed(title = f"", descripton = f"")
+    embed.add_field(name = f"보유자산 : ", value = f"{MONEY}원", inline = True)
+    embed.set_footer(text = f"{CMD_AUTHOR_USER}")
+    
+    await ctx.send(embed = embed)
+
+@bot.command()
+async def 가격초기화(ctx):
+    WIPE_STOCK_LIST = SHOW_CURRENT_STOCK_LIST
+    ARRAY_COUNTER = len(WIPE_STOCK_LIST)
+    CMD_AUTHOR_USER_ID = ctx.author.id
+
+    if CMD_AUTHOR_USER_ID == 688705421082361856:
+        for STOCK in range(ARRAY_COUNTER):
+            STOCK_NAME = str(WIPE_STOCK_LIST[STOCK])
+
+            with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "r", encoding = "utf-8") as WIPE_STOCK_LIST_PROFILE:
+                WIPE_STOCK_LIST_DATA = json.load(WIPE_STOCK_LIST_PROFILE)
+                WIPE_STOCK_LIST_PROFILE.close()
+
+            STOCK_PRICE = 10000
+
+            with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "w", encoding = "utf-8") as WIPE_STOCK_LIST_PROFILE:
+                WIPE_STOCK_LIST_DATA['STOCK_PRICE'] = STOCK_PRICE
+                json.dump(WIPE_STOCK_LIST_DATA, WIPE_STOCK_LIST_PROFILE, indent = 4)
+
+    else:
+        await ctx.send("당신은 이 명령어를 사용할 권한이 없습니다.")
+
+@tasks.loop(seconds = 1)
+async def Stock_Change_Cycle(self):
+    #=========================변수 선언=========================
+    STOCK_LIST_COUNTER = len(SHOW_CURRENT_STOCK_LIST)
+    SHOW_STOCK_LIST = []
+    NowDay = datetime.datetime.today()
+    NOW_MIN = NowDay.minute
+    NOW_SEC = NowDay.second
+    channel = bot.get_channel(817688404631617546)
+    global channel_st
+    channel_st = bot.get_channel(838936568273043476)
+    #channel_st = bot.get_channel(839531082986422292)#test server
+    
+    CHANGE_PRICE_STOCK_LIST = SHOW_CURRENT_STOCK_LIST
+    ARRAY_COUNTER = len(CHANGE_PRICE_STOCK_LIST)
+    #주식 거래장 채널 ID = 838936568273043476
+    CHANCE_CHECKER = [1, 2, 3, 4, 5]
+    CONTROL = 0
+    WARNING = 1
+    ADMIN = "심심한데놀아줘#2140"
+    #=========================변수 선언=========================
+                
+    
+    MIN_CHECK = NOW_MIN % 5
+    if MIN_CHECK == 0:
+        if NOW_SEC == 0:
+            await channel_st.purge(limit=100)
+
+            
+            embed = discord.Embed(title = f"##[주식 목록 & 주식 가격]##\n\n", description = f"")
+            embed.add_field(name = f"마크", value = f"가격 수정중...", inline = False)
+            embed.add_field(name = f"발로란트", value = f"가격 수정중...", inline = False)
+            embed.add_field(name = f"배그", value = f"가격 수정중...", inline = False)
+            embed.add_field(name = f"오버워치", value = f"가격 수정중...", inline = False)
+            embed.add_field(name = f"롤", value = f"가격 수정중...", inline = False)
+            
+            DELAY_EMBED = await channel_st.send(embed = embed)
+
+            for STOCK in range(ARRAY_COUNTER):
+
+                with open(f"{User_Data_dir}\\User_Data\\{ADMIN}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+                    READ_USER_DATA = json.load(READ_USER_PROFILE)
+                    READ_USER_PROFILE.close()
+
+                for STOCK_COUNT in range(STOCK_LIST_COUNTER):
+                    STOCK_NAME_BH = SHOW_CURRENT_STOCK_LIST[STOCK_COUNT]
+                    STOCK_NAME_CHECK = f"STOCK_{STOCK_NAME_BH}"
+                    if STOCK_NAME_CHECK in READ_USER_DATA:
+                        SHOW_STOCK_LIST.append(STOCK_NAME_BH) #뒤에 주식 이름
+
+    
+                SHOW_STOCK_LIST_COUNTER = len(SHOW_STOCK_LIST)
+
+                for STOCK_COUNT in range(SHOW_STOCK_LIST_COUNTER):
+                    STOCK_NAME = str(CHANGE_PRICE_STOCK_LIST[STOCK])
+                    STOCK_NAME_CHECK = f'STOCK_{STOCK_NAME}'
+                    if STOCK_NAME_CHECK in READ_USER_DATA:
+                        USER_OWN_STOCK_AMOUNT = READ_USER_DATA[STOCK_NAME_CHECK]
+                        if USER_OWN_STOCK_AMOUNT != 0:
+                            CONTROL = 1
+                        else:
+                            CONTROL = 0
+                
+
+                PRICE_CHANGE_RANGE = random.randint(1, 30)
+                STOCK_NAME = str(CHANGE_PRICE_STOCK_LIST[STOCK])
+                print(f"CONTROL = {CONTROL}")
+                print(f"STOCK_NAME = {STOCK_NAME}")
+                
+                
+                if CONTROL == 1:
+                    if WARNING != 1:
+                        PRICE_CHANGE_PL_MI = 1
+                    else:
+                        PRICE_CHANGE_PL_MI = random.randint(1, 10)
+                else:
+                    PRICE_CHANGE_PL_MI = random.randint(1, 10)
+
+                CHANCE_TIME = random.randint(1, 1000)
+                CHANCE_RANDOM = random.randint(5000, 10000)
+                
+
+                with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "r", encoding = "utf-8") as STOCK_LIST_PROFILE:
+                    STOCK_LIST_DATA = json.load(STOCK_LIST_PROFILE)
+                    STOCK_LIST_PROFILE.close()
+
+                STOCK_PRICE_BFCH = STOCK_LIST_DATA['STOCK_PRICE']
+                STOCK_CHANGE_RANGE = int(STOCK_PRICE_BFCH) * (PRICE_CHANGE_RANGE / 100)
+                
+                PRICE_UP_CHECK = "PRICE_UP"
+                PRICE_DOWN_CHECK = "PRICE_DOWN"
+                
+                PRICE_UPDOWN_CHECK = []
+                PRICE_UPDOWN_CHECK.append(PRICE_UP_CHECK)
+                PRICE_UPDOWN_CHECK.append(PRICE_DOWN_CHECK)
+
+                PRICE_UPDOWN_CHECK_COUNTER = len(PRICE_UPDOWN_CHECK)
+
+                if PRICE_CHANGE_PL_MI <= 5:
+                    
+                    
+                    #await channel_st.send(f"STOCK_NAME = {STOCK_NAME}\nPRICE_CHANGE_PL_MI = {PRICE_CHANGE_PL_MI}\nSTOCK_PRICE_AFCH = {STOCK_PRICE_AFCH}\nSTOCK_CHANGE_RANGE = {round(float(STOCK_CHANGE_RANGE), 0)}\nCHANCE_RANDOM = {CHANCE_RANDOM}\n\n")
+                    
+
+                    for COUNT in range(PRICE_UPDOWN_CHECK_COUNTER):
+
+
+                        if PRICE_UPDOWN_CHECK[COUNT] not in STOCK_LIST_DATA:
+                            STOCK_LIST_DATA[PRICE_UPDOWN_CHECK[COUNT]] = 0
+
+                            if PRICE_UPDOWN_CHECK[COUNT] == "PRICE_UP":
+                                BEFORE_PRICE_UPDOWN = STOCK_LIST_DATA['PRICE_UP']
+                                if BEFORE_PRICE_UPDOWN < 2:
+                                    STOCK_LIST_DATA['PRICE_UP'] = BEFORE_PRICE_UPDOWN + 1
+                                    STOCK_LIST_DATA['PRICE_DOWN'] = 0
+                                    pass
+                                    
+                                else:
+                                    STOCK_LIST_DATA['PRICE_UP'] = BEFORE_PRICE_UPDOWN + 0
+                                    STOCK_LIST_DATA['PRICE_DOWN'] = 0
+                                    pass
+
+                                if CHANCE_TIME in CHANCE_CHECKER:
+                                    STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + int(CHANCE_RANDOM)
+                                    pass
+
+                                else:
+                                    LAST_PRICE_UPDOWN_CHANCE = random.randint(1, 10)
+                                    if STOCK_PRICE_BFCH <= 3500:
+
+                                        if LAST_PRICE_UPDOWN_CHANCE >= 8:
+                                            STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + int(CHANCE_RANDOM)
+                                            pass
+
+                                        else:
+                                            STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + round(float(STOCK_CHANGE_RANGE), 0)
+                                            pass
+                                    else:
+                                        STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + round(float(STOCK_CHANGE_RANGE), 0)
+                                        pass
+                        
+                            else:
+                                pass
+                        
+                        else:
+                            BEFORE_PRICE_UPDOWN = STOCK_LIST_DATA[PRICE_UPDOWN_CHECK[COUNT]]
+
+                            if PRICE_UPDOWN_CHECK[COUNT] == "PRICE_UP":
+                                BEFORE_PRICE_UPDOWN = STOCK_LIST_DATA['PRICE_UP']
+                                if BEFORE_PRICE_UPDOWN < 2:
+                                    STOCK_LIST_DATA['PRICE_UP'] = BEFORE_PRICE_UPDOWN + 1
+                                    STOCK_LIST_DATA['PRICE_DOWN'] = 0
+                                    pass
+                                    
+                                else:
+                                    STOCK_LIST_DATA['PRICE_UP'] = BEFORE_PRICE_UPDOWN + 0
+                                    STOCK_LIST_DATA['PRICE_DOWN'] = 0
+                                    pass
+
+                                if CHANCE_TIME in CHANCE_CHECKER:
+                                    STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + int(CHANCE_RANDOM)
+                                    pass
+
+                                else:
+                                    LAST_PRICE_UPDOWN_CHANCE = random.randint(1, 10)
+                                    if STOCK_PRICE_BFCH <= 3500:
+
+                                        if LAST_PRICE_UPDOWN_CHANCE >= 8:
+                                            STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + int(CHANCE_RANDOM)
+                                            pass
+
+                                        else:
+                                            STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + round(float(STOCK_CHANGE_RANGE), 0)
+                                            pass
+                                    else:
+                                        STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + round(float(STOCK_CHANGE_RANGE), 0)
+                                        pass
+                            else:
+                                pass
+
+
+
+                elif PRICE_CHANGE_PL_MI >= 6:
+                    
+                    
+                    #await channel_st.send(f"STOCK_NAME = {STOCK_NAME}\nPRICE_CHANGE_PL_MI = {PRICE_CHANGE_PL_MI}\nSTOCK_PRICE_AFCH = {STOCK_PRICE_AFCH}\nSTOCK_CHANGE_RANGE = {round(float(STOCK_CHANGE_RANGE), 0)}\nCHANCE_RANDOM = {CHANCE_RANDOM}\n\n")
+
+                    for COUNT in range(PRICE_UPDOWN_CHECK_COUNTER):
+
+
+                        if PRICE_UPDOWN_CHECK[COUNT] not in STOCK_LIST_DATA:
+                            STOCK_LIST_DATA[PRICE_UPDOWN_CHECK[COUNT]] = 0
+
+                            if PRICE_UPDOWN_CHECK[COUNT] == "PRICE_DOWN":
+                                BEFORE_PRICE_UPDOWN = STOCK_LIST_DATA['PRICE_DOWN']
+                                if BEFORE_PRICE_UPDOWN < 2:
+                                    STOCK_LIST_DATA['PRICE_DOWN'] = BEFORE_PRICE_UPDOWN + 1
+                                    STOCK_LIST_DATA['PRICE_UP'] = 0
+                                    pass
+                                    
+                                else:
+                                    STOCK_LIST_DATA['PRICE_DOWN'] = BEFORE_PRICE_UPDOWN + 0
+                                    STOCK_LIST_DATA['PRICE_UP'] = 0
+                                    pass
+
+                                if CHANCE_TIME in CHANCE_CHECKER:
+                                    STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round((float(STOCK_CHANGE_RANGE) / 10), 0)
+                                    pass
+
+                                else:
+                                    LAST_PRICE_UPDOWN_CHANCE = random.randint(1, 10)
+                                    if STOCK_PRICE_BFCH <= 3500:
+
+                                        if LAST_PRICE_UPDOWN_CHANCE >= 8:
+                                            STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round((float(STOCK_CHANGE_RANGE) / 10), 0)
+                                            pass
+
+                                        else:
+                                            STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round(float(STOCK_CHANGE_RANGE), 0)
+                                            pass
+                                    else:
+                                        STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round(float(STOCK_CHANGE_RANGE), 0)
+                                        pass
+                            else:
+                                pass
+                            
+
+                        else:
+                            BEFORE_PRICE_UPDOWN = STOCK_LIST_DATA[PRICE_UPDOWN_CHECK[COUNT]]
+
+                            if PRICE_UPDOWN_CHECK[COUNT] == "PRICE_DOWN":
+                                BEFORE_PRICE_UPDOWN = STOCK_LIST_DATA['PRICE_DOWN']
+                                if BEFORE_PRICE_UPDOWN < 2:
+                                    STOCK_LIST_DATA['PRICE_DOWN'] = BEFORE_PRICE_UPDOWN + 1
+                                    STOCK_LIST_DATA['PRICE_UP'] = 0
+                                    pass
+                                    
+                                else:
+                                    STOCK_LIST_DATA['PRICE_DOWN'] = BEFORE_PRICE_UPDOWN + 0
+                                    STOCK_LIST_DATA['PRICE_UP'] = 0
+                                    pass
+
+                                if CHANCE_TIME in CHANCE_CHECKER:
+                                    STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round((float(STOCK_CHANGE_RANGE) / 10), 0)
+                                    pass
+
+                                else:
+                                    LAST_PRICE_UPDOWN_CHANCE = random.randint(1, 10)
+                                    if STOCK_PRICE_BFCH <= 3500:
+
+                                        if LAST_PRICE_UPDOWN_CHANCE >= 8:
+                                            STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round((float(STOCK_CHANGE_RANGE) / 10), 0)
+                                            pass
+
+                                        else:
+                                            STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round(float(STOCK_CHANGE_RANGE), 0)
+                                            pass
+                                    else:
+                                        STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round(float(STOCK_CHANGE_RANGE), 0)
+                                        pass
+                            else:
+                                pass
+
+
+
+                
+                with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "w", encoding = "utf-8") as STOCK_LIST_PROFILE:
+                    STOCK_LIST_DATA['STOCK_PRICE'] = STOCK_PRICE_AFCH
+                    json.dump(STOCK_LIST_DATA, STOCK_LIST_PROFILE, indent = 4)
+
+               #=================================================가격 이상 판별 테스트 코드=================================================
+                
+                TEST_VALUE_CHECK = "STOCK_PRICE_CHECK"  
+
+                with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "r", encoding = "utf-8") as STOCK_LIST_PROFILE:
+                    STOCK_LIST_DATA = json.load(STOCK_LIST_PROFILE)
+                    STOCK_LIST_PROFILE.close()
+
+                if TEST_VALUE_CHECK not in STOCK_LIST_DATA:
+                    with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "w", encoding = "utf-8") as STOCK_LIST_PROFILE:
+                        STOCK_LIST_DATA['STOCK_PRICE_CHECK'] = str(STOCK_PRICE_AFCH)
+                        json.dump(STOCK_LIST_DATA, STOCK_LIST_PROFILE, indent = 4)
+                else:
+                    EXISITING_VALUE = STOCK_LIST_DATA['STOCK_PRICE_CHECK']
+                    with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "w", encoding = "utf-8") as STOCK_LIST_PROFILE:
+                        STOCK_LIST_DATA['STOCK_PRICE_CHECK'] = f"{EXISITING_VALUE}_{str(STOCK_PRICE_AFCH)}"
+                        json.dump(STOCK_LIST_DATA, STOCK_LIST_PROFILE, indent = 4)
+                    
+                #=================================================가격 이상 판별 테스트 코드=================================================
+                
+            embed = discord.Embed(title = f"##[주식 목록 & 주식 가격]##\n\n", description = f"")
+
+            for STOCK in range(ARRAY_COUNTER):
+                STOCK_NAME = str(CHANGE_PRICE_STOCK_LIST[STOCK])
+                STOCK_PRICE = Checking_Stock_Price(STOCK_NAME)
+                embed.add_field(name = f"{STOCK_NAME}", value = f"{STOCK_PRICE}원", inline = False)
+            
+            await DELAY_EMBED.edit(embed = embed)
+
+            Del(5)
+
+        
+
+    else:
+        pass  
+
+
+
+
+    
+
+    
+            
+            
 
 @bot.command()
 async def 등록인원(ctx):
-    embed = discord.Embed(title = f"[##자가진단 등록 인원##]", description = f"1. 이건보\n2. 이윤행 \n3. 김기정 \n4. 정윤호 \n5. 종다훈 \n6. 고준혁")
+    embed = discord.Embed(title = f"[##자가진단 등록 인원##]", description = f"1. 이건보\n2. 이윤행 \n3. 김기정 \n4. 정윤호 \n5. 종다훈 \n6. 고준혁 \n7. 임원경 \n8. 두동규")
     await ctx.send(embed = embed)
 
 @bot.command()
@@ -1319,6 +2563,7 @@ async def 자가진단(ctx, *arg):
 @bot.command()
 async def 마이크(ctx, *, arg):
     await ctx.send(content=arg, tts=True)
+
 """
 @bot.command()
 async def 테스트(ctx, arg):
@@ -1354,7 +2599,7 @@ async def 주사위놀이(ctx):
         await ctx.send(embed = embed)
 
     elif Rnd_dice_USER > Rnd_dice_BOT:
-        embed=discord.Embed(title = f'[##주사위 게임##]', description = f'##당신의 주사위 갯수가 {Rnd_dice_USER}으로 \n더 높으므로 통돌이의 승리##', color=0x00ff00)
+        embed=discord.Embed(title = f'[##주사위 게임##]', description = f'##당신의 주사위 갯수가 {Rnd_dice_USER}으로 \n더 높으므로 당신의 승리##', color=0x00ff00)
         await ctx.send(embed = embed)
             
     elif Rnd_dice_USER == Rnd_dice_BOT:
@@ -1364,8 +2609,51 @@ async def 주사위놀이(ctx):
 
     
 
+@bot.command()
+async def 클래스룸(ctx, *arg):
+    ClsData = list(arg) #ClsData[0] 요일 / ClsData[1] 교시
+    
+    ClsData[0] = int(ClsData[0])
+    ClsData_Type = type(ClsData[0])
+    await ctx.send(f"ClsData[0] = {ClsData_Type}")
 
+    if ClsData[0] == 0:
+        Print_Dotw = "월요일"
+        pass
+
+    elif ClsData[0] == 1:
+        Print_Dotw = "화요일"
+        pass
+    
+    elif ClsData[0] == 2:
+        Print_Dotw = "수요일"
+        pass
+    
+    elif ClsData[0] == 3:
+        Print_Dotw = "목요일"
+        pass
+
+    elif ClsData[0] == 4:
+        Print_Dotw = "금요일"
+        pass
+
+    else:
+        Print_Dotw = "주말"
+        pass
+
+    if ClsData[0] <= 4:
+        todSub = Today_Dotw_Checker(int(ClsData[0]))
+        Today = datetime.datetime.today()
         
+        
+        msg1 = await ctx.send("현재 클래스룸 접속중입니다. 잠시만 기다려주십시오.")
+
+        nowSub = Auto_ClsRoom_Loader(todSub[1], int(ClsData[1])) #nowSub[0] 과목 / nowSub[1] 기능 실행 소요시간
+        await msg1.edit(content = f"{Print_Dotw} {ClsData[1]}교시의 과목인 [{nowSub[0]}]의 클래스룸으로 접속을 완료하였습니다.")
+        await ctx.send(f"소요시간 : {nowSub[1]}초")
+
+    elif ClsData[0] >= 5:
+        await ctx.send("해당 요일은 주말입니다. 따라서 과목데이터가 존재하지 않습니다.")
 
 
 
@@ -1412,8 +2700,80 @@ async def kimkijung(self):
 
 
 
+
+
+
+
 @tasks.loop(seconds=1)
-async def Period_Check(self): #완성....    
+async def Auto_Check(self):
+    nowDay = datetime.datetime.today()
+    Dotw = nowDay.weekday()
+    Td_Hour = nowDay.hour
+    Td_min = nowDay.min
+    Td_sec = nowDay.second
+    channel = bot.get_channel(817688404631617546)
+
+    if Dotw != 5 or 6:
+        if Td_Hour == 16:
+            if Td_min == 19:
+                if Td_sec == 0:
+                    runningTime_st = time.perf_counter()
+                    UserData = User6_data
+                    USER_NAME = UserData[0]
+                    msg = await channel.send("자가진단을 진행하고 있습니다. (약 30초 ~ 1분 정도 소요됩니다.)")
+
+                    Courrent_Status = myHealthy_SelfCheck(USER_NAME)
+
+                    runningTime_fi = time.perf_counter()
+                    runningTime = runningTime_fi - runningTime_st
+
+                    if Courrent_Status != 1:
+                        await msg.edit(content = "자가진단에 실패하였습니다. 제작자를 호출하여주세요.")
+
+                    elif Courrent_Status == 1:
+                        embed = discord.Embed(title = f"[##자가 진단 완료##]", description = f"##<{UserData[0]}>님의 자가진단을 완료하였습니다##", color=0x00ff00)
+                        embed.set_footer(text = f"소요시간 : {runningTime}초")
+                        await msg.delete()
+                        await channel.send(embed = embed)
+    
+"""
+@tasks.loop(seconds=1)
+async def Unyang_Period_Check(self):
+    nowPeriod_fin = 0
+    Td_Date = datetime.datetime.today()
+    Td_Dotw = Td_Date.weekday()
+    Td_hour = Td_Date.hour
+    Td_min = Td_Date.minute
+    Td_sec = Td_Date.second
+
+    nowPeriod = [] #현재 교시를 저장할 배열
+    todSub_Array = [] #각 반의 과목을 저장할 배열
+
+    channel = bot.get_channel(txtchId) #txtchId에 할당된 채널 아이디를 기준으로 봇이 메세지를 보낼 채널 선정
+
+    todSub_Array = Today_Dotw_Checker(Td_Dotw) #현재 요일의 각 반의 과목 배열을 받아와 todSub_Array 배열에 저장
+    nowPeriod = Get_Now_Period(Td_hour, Td_min, Td_sec) #현재 교시를 Td_hour, Td_min값을 기준으로 측정해 nowPeriod배열에 저장
+    nowPeriod_fin = Period_Changer(nowPeriod) #현재 교시의 값이 배열을 지정할 수 있도록 변환
+    todDotw = Get_Dotw(Td_Dotw) #현재의 Dotw값을 받아서 알맞은 요일을 반환
+
+    tts_arg = "출첵"
+
+    
+
+
+    if nowPeriod != None:
+
+        if Td_min == 10:
+            print(f"{todDotw}")
+            print(f"운양고 {nowPeriod}"교시)
+
+            embed = discord.Embed(title = f'[{nowPeriod}교시 출첵을 해야할 시간입니다.]', description = f'##{nowPeriod}교시 출첵 알람##', color=0x00ff00)
+            embed.add_field(name=f'[운양고 2학년 5반]', value=f'[{todSub_Array[2][nowPeriod_fin]}]', inline=False)
+
+"""
+        
+@tasks.loop(seconds=1)
+async def Sawoo_Period_Check(self): #완성....    
 
     nowPeriod_fin = 0
 
@@ -1440,29 +2800,43 @@ async def Period_Check(self): #완성....
 
     if nowPeriod != None: #nowPeriod 값이 재 시간이 아닌 경우 None으로 리턴되어 재시간이 아닐시 멈춤
 
-        print(f"{todDotw}")
-        print(f"{nowPeriod}교시")
+        if Td_min == 10:    
+            print(f"{todDotw}")
+            print(f"사우고 {nowPeriod}교시")
 
-        embed=discord.Embed(title = f'[{nowPeriod}교시 출첵을 해야할 시간입니다.]', description = f'##{nowPeriod}교시 출첵 알람##', color=0x00ff00)
-        #embed.add_field(name=f'[김포고 2학년 6반]', value=f'[{todSub_Array[3][nowPeriod_fin]}]', inline=False)
-        embed.add_field(name=f'[사우고 2학년 5반]', value=f'[{todSub_Array[2][nowPeriod_fin]}]', inline=False)
-        embed.add_field(name=f'[사우고 2학년 4반]', value=f'[{todSub_Array[1][nowPeriod_fin]}]', inline=False)
-        embed.add_field(name=f'[사우고 2학년 2반]', value=f'[{todSub_Array[0][nowPeriod_fin]}]', inline=False)
+            embed=discord.Embed(title = f'[{nowPeriod}교시 출첵을 해야할 시간입니다.]', description = f'##{nowPeriod}교시 출첵 알람##', color=0x00ff00)
+            #embed.add_field(name=f'[김포고 2학년 6반]', value=f'[{todSub_Array[3][nowPeriod_fin]}]', inline=False)
+            embed.add_field(name=f'[사우고 2학년 5반]', value=f'[{todSub_Array[2][nowPeriod_fin]}]', inline=False)
+            embed.add_field(name=f'[사우고 2학년 4반]', value=f'[{todSub_Array[1][nowPeriod_fin]}]', inline=False)
+            embed.add_field(name=f'[사우고 2학년 2반]', value=f'[{todSub_Array[0][nowPeriod_fin]}]', inline=False)
+            
+            await channel.send(content = tts_arg, tts = True)
+            time.sleep(1)
+            await channel.send(embed=embed)
+            time.sleep(1)
+            
 
-        await channel.send(content = tts_arg, tts = True)
-        time.sleep(1)
-        await channel.send(embed=embed)
-        time.sleep(1)
-        
+            #if not vc.is_playing():
+            #    mp3 = "D:\\Check_Sound_File\\2021-03-29 10-32-45.mkv"
+            #    vc.play(FFmpegPCMAudio(mp3, **FFMPEG_OPTIONS))
+            
+            #else:
+            #    await channel.send("이미 재생되고 있습니다!")
 
-        #if not vc.is_playing():
-        #    mp3 = "D:\\Check_Sound_File\\2021-03-29 10-32-45.mkv"
-        #    vc.play(FFmpegPCMAudio(mp3, **FFMPEG_OPTIONS))
-        
-        #else:
-        #    await channel.send("이미 재생되고 있습니다!")
-        
+        elif Td_min == 9:
+            print(f"{todDotw}")
+            print(f"{nowPeriod}교시")
 
+            embed=discord.Embed(title = f'[{nowPeriod}교시 출첵을 해야할 시간입니다.]', description = f'##{nowPeriod}교시 출첵 알람##', color=0x00ff00)
+            #embed.add_field(name=f'[김포고 2학년 6반]', value=f'[{todSub_Array[3][nowPeriod_fin]}]', inline=False)
+            embed.add_field(name=f'[사우고 2학년 5반]', value=f'[{todSub_Array[2][nowPeriod_fin]}]', inline=False)
+            embed.add_field(name=f'[사우고 2학년 4반]', value=f'[{todSub_Array[1][nowPeriod_fin]}]', inline=False)
+            embed.add_field(name=f'[사우고 2학년 2반]', value=f'[{todSub_Array[0][nowPeriod_fin]}]', inline=False)
+
+            time.sleep(1)
+            await channel.send(embed=embed)
+            time.sleep(1)
+            
     elif nowPeriod == None:
         pass
     
