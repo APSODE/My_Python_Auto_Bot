@@ -2237,7 +2237,7 @@ async def Stock_Change_Cycle(self):
     CHANCE_CHECKER = [1, 2, 3, 4, 5]
     CONTROL = 0
     WARNING = 1
-    ADMIN = "심심한데놀아줘#2140"
+    ADMIN = "심심한데놀아줘#2140" #가격 변동 테스트 용 유저 
     #=========================변수 선언=========================
                 
     
