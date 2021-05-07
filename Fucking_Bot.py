@@ -27,8 +27,8 @@ juns_image_dir = images_file_dir + "juns\\"
 han_image_dir = images_file_dir + "han\\"
 leesae_image_dir = images_file_dir + "leesae\\"
 bot = commands.Bot(command_prefix='!')
-TEST_BOT_TOKEN = 'YOUR_BOT_TOKEN'
-WASHER_BOT_TOKEN = 'YOUR_BOT_TOKEN'
+TEST_BOT_TOKEN = 'ODI0NjU3OTY5MTEwODQzNDEy.YFyklQ.lnE6T-5IS_8ts8XMhD4CXdqzGB8' 
+WASHER_BOT_TOKEN = 'ODI4MjY3OTcwNTYwMDAwMDEw.YGnGqA.WjC4xSVMig4R55MkxhwGJGUX3W8'
 BOT_TOKEN = WASHER_BOT_TOKEN
 
 
@@ -48,7 +48,8 @@ Gather_Evidence_List = ["동규"]
 #Gather_Evidence_List = ["돼지", "뚱", "통통", "뚠뚠", "살찐", "건보", "꿀꿀"]
 Gathered_Evidence_dir = "D:\\건보\\프로그램 관련\\Gathered_Evidence.txt"
 User_Data_dir = "D:\\건보\\동기화\\Naver MYBOX\\C언어반 예습\\매크로\\통돌이\\"
-SHOW_CURRENT_STOCK_LIST = ['롤', '마크', '발로란트', '배그', '오버워치', '나무위키', '산와머니', '순무코인', '히토미', '샘숭전자', '애풀', '세빈왕국', '테수라']
+#User_Data_dir = "C:\\Users\\leegu\\Desktop\\통돌이" #데스크탑
+SHOW_CURRENT_STOCK_LIST = ['롤', '마크', '발로란트', '배그', '오버워치', '나무위키', '산와머니', '순무코인', '히토미', '샘숭전자', '애풀', '세빈왕국', '테수라', '컴허브']
 
 subUrl_List = [] #각 과목의 클래스룸 링크를 받아오는 배열
 
@@ -1604,7 +1605,7 @@ async def 자산(ctx, arg: discord.Member = None):
             USER_MONEY = READ_USER_DATA['USERMONEY']
                 
             embed = discord.Embed(title = f"[##현재 자산##]", description = f"")
-            embed.add_field(name = f"[보유 현금]", value = f"{USER_MONEY}원", inline = False)
+            embed.add_field(name = f":coin: 보유 현금 ", value = f"{USER_MONEY}원", inline = False)
             #embed.add_field(indax = "STOCK", name = f"[보유 주식]", value = f"", inline = False)
             for STOCK_COUNT in range(STOCK_LIST_COUNTER):
                 STOCK_NAME_BH = SHOW_CURRENT_STOCK_LIST[STOCK_COUNT]
@@ -1621,7 +1622,7 @@ async def 자산(ctx, arg: discord.Member = None):
                 if STOCK_NAME_CHECK in READ_USER_DATA:
                     USER_OWN_STOCK_AMOUNT = READ_USER_DATA[STOCK_NAME_CHECK]
                     if USER_OWN_STOCK_AMOUNT != 0:
-                        embed.add_field(name = f"{STOCK_NAME}  ", value = f"{USER_OWN_STOCK_AMOUNT}주", inline = True)
+                        embed.add_field(name = f":receipt: {STOCK_NAME} ", value = f"{USER_OWN_STOCK_AMOUNT}주", inline = True)
                     else:
                         pass
             embed.set_footer(text = f"{CMD_AUTHOR_USER}")
@@ -1643,7 +1644,7 @@ async def 자산(ctx, arg: discord.Member = None):
             USER_MONEY = READ_USER_DATA['USERMONEY']
                 
             embed = discord.Embed(title = f"[##현재 자산##]", description = f"")
-            embed.add_field(name = f"[보유 현금]", value = f"{USER_MONEY}원", inline = False)
+            embed.add_field(name = f":coin: 보유 현금 ", value = f"{USER_MONEY}원", inline = False)
             #embed.add_field(indax = "STOCK", name = f"[보유 주식]", value = f"", inline = False)
             for STOCK_COUNT in range(STOCK_LIST_COUNTER):
                 STOCK_NAME_BH = SHOW_CURRENT_STOCK_LIST[STOCK_COUNT]
@@ -1660,7 +1661,7 @@ async def 자산(ctx, arg: discord.Member = None):
                 if STOCK_NAME_CHECK in READ_USER_DATA:
                     USER_OWN_STOCK_AMOUNT = READ_USER_DATA[STOCK_NAME_CHECK]
                     if USER_OWN_STOCK_AMOUNT != 0:
-                        embed.add_field(name = f"{STOCK_NAME}  ", value = f"{USER_OWN_STOCK_AMOUNT}주", inline = True)
+                        embed.add_field(name = f":receipt: {STOCK_NAME} ", value = f"{USER_OWN_STOCK_AMOUNT}주", inline = True)
                     else:
                         pass
 
@@ -1681,7 +1682,7 @@ async def 베팅(ctx, arg):
     CMD_AUTHOR_USER = ctx.author
     USER_MONEY = int(Checking_Money(CMD_AUTHOR_USER))
     #await ctx.send(f"USER_MONEY : {USER_MONEY}")
-    if Money >= 500:
+    if Money >= 500000:
 
         if Money <= int(USER_MONEY):
             Rnd = random.randint(1, 10)
@@ -1766,7 +1767,7 @@ async def 베팅(ctx, arg):
                     json.dump(EDIT_USER_DATA, EDIT_USER_PROFILE, indent = 4)
                     EDIT_USER_PROFILE.close()
 
-                await ctx.send("아쉽지만 배팅금액은 제가 가져갈께요~")
+                await ctx.send(":money_with_wings: 아쉽지만 배팅금액은 제가 가져갈께요~")
 
                 Del(1)
 
@@ -1781,7 +1782,7 @@ async def 베팅(ctx, arg):
         elif Money > int(USER_MONEY):
             await ctx.send(f"보유하고 있는 자산보다 더 많은 돈은 배팅할 수 없어요! \n{USER_MONEY}이하로 배팅해주세요!")
     else:
-        await ctx.send("베팅금액은 최소 500원 이상부터 입니다.")   
+        await ctx.send("베팅금액은 최소 500000원 이상부터 입니다.")   
 
 @bot.command()
 async def 지급(ctx, *arg):
@@ -2013,7 +2014,7 @@ async def 주식(ctx, *arg):
         elif FUNC_NAME == "구매":
             try:
                 STOCK_NAME = str(OBJ_ONE)
-                BUY_AMOUNT = int(OBJ_TWO)
+                
 
                 STOCK_LIST_CHECK = os.path.exists(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json")
 
@@ -2023,13 +2024,18 @@ async def 주식(ctx, *arg):
                         BUY_STOCK_PROFILE.close()
 
                     STOCK_PRICE = int(BUY_STOCK_DATA['STOCK_PRICE'])
-                    TOTAL_PRICE = int(STOCK_PRICE) * int(BUY_AMOUNT)
 
                     with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as BUYER_PROFILE:
                         BUYER_DATA = json.load(BUYER_PROFILE)
                         BUYER_PROFILE.close()
 
                     BUYER_MONEY = BUYER_DATA['USERMONEY']
+
+                    if OBJ_TWO == "최대":
+                        BUY_AMOUNT = round((int(BUYER_MONEY) / int(STOCK_PRICE)), 0)
+                    else:
+                        BUY_AMOUNT = int(OBJ_TWO)
+                    TOTAL_PRICE = int(STOCK_PRICE) * int(BUY_AMOUNT)
                     
                     if TOTAL_PRICE <= BUYER_MONEY: #USERDATA의 USERMONEY가 충분하다면 밑의 코드 실행
 
@@ -2076,7 +2082,7 @@ async def 주식(ctx, *arg):
             try:
 
                 STOCK_NAME = str(OBJ_ONE)
-                SELL_AMOUNT = int(OBJ_TWO)
+                
 
                 STOCK_LIST_CHECK = os.path.exists(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json")
 
@@ -2086,12 +2092,21 @@ async def 주식(ctx, *arg):
                         SELL_STOCK_PROFILE.close()
 
                     STOCK_PRICE = int(SELL_STOCK_DATA['STOCK_PRICE'])
-                    TOTAL_PRICE = int(STOCK_PRICE) * int(SELL_AMOUNT)
+                    
+                    with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as SELLER_PROFILE:
+                        SELLER_DATA = json.load(SELLER_PROFILE)
+                        SELLER_PROFILE.close()
 
-                    SELLER_MONEY = Checking_Money(CMD_AUTHOR_USER)
+                    SELLER_MONEY = SELLER_DATA['USERMONEY']
+                    CURRENT_USER_STOCK_CHECK = SELLER_DATA[f'STOCK_{STOCK_NAME}']
+                    
+                    if OBJ_TWO == "최대":
+                        SELL_AMOUNT = CURRENT_USER_STOCK_CHECK
+                    else:
+                        SELL_AMOUNT = int(OBJ_TWO)
+                    TOTAL_PRICE = int(STOCK_PRICE) * int(SELL_AMOUNT)
                     
                     
-                    CURRENT_USER_STOCK_CHECK = Checking_Stock(CMD_AUTHOR_USER, STOCK_NAME)
                     
                     if SELL_AMOUNT <= CURRENT_USER_STOCK_CHECK:
 
@@ -2165,8 +2180,10 @@ async def 구제금융(ctx):
             READ_USER_PROFILE.close()
 
         if STOCK_CHECK_NAME in READ_USER_DATA:
-            QUALIFICATION = QUALIFICATION + 1
-            
+            if READ_USER_DATA[STOCK_CHECK_NAME] != 0:
+                QUALIFICATION = QUALIFICATION + 1
+            elif READ_USER_DATA[STOCK_CHECK_NAME] == 0:
+                QUALIFICATION = QUALIFICATION + 0
 
         elif STOCK_CHECK_NAME not in READ_USER_DATA:
             QUALIFICATION = QUALIFICATION + 0
@@ -2223,6 +2240,8 @@ async def Stock_Change_Cycle(self):
     #=========================변수 선언=========================
     STOCK_LIST_COUNTER = len(SHOW_CURRENT_STOCK_LIST)
     SHOW_STOCK_LIST = []
+    USING_TEXT_EMOJI = []
+    VARIABLE_AMOUNT_LIST = []
     NowDay = datetime.datetime.today()
     NOW_MIN = NowDay.minute
     NOW_SEC = NowDay.second
@@ -2237,7 +2256,7 @@ async def Stock_Change_Cycle(self):
     CHANCE_CHECKER = [1, 2, 3, 4, 5]
     CONTROL = 0
     WARNING = 1
-    ADMIN = "심심한데놀아줘#2140" #가격 변동 테스트 용 유저 
+    ADMIN = "심심한데놀아줘#2140"
     #=========================변수 선언=========================
                 
     
@@ -2319,11 +2338,14 @@ async def Stock_Change_Cycle(self):
                 if PRICE_CHANGE_PL_MI <= 5:
                     
                     
+                    
                     #await channel_st.send(f"STOCK_NAME = {STOCK_NAME}\nPRICE_CHANGE_PL_MI = {PRICE_CHANGE_PL_MI}\nSTOCK_PRICE_AFCH = {STOCK_PRICE_AFCH}\nSTOCK_CHANGE_RANGE = {round(float(STOCK_CHANGE_RANGE), 0)}\nCHANCE_RANDOM = {CHANCE_RANDOM}\n\n")
                     
 
                     for COUNT in range(PRICE_UPDOWN_CHECK_COUNTER):
-
+                        
+                        
+                        
 
                         if PRICE_UPDOWN_CHECK[COUNT] not in STOCK_LIST_DATA:
                             STOCK_LIST_DATA[PRICE_UPDOWN_CHECK[COUNT]] = 0
@@ -2342,6 +2364,20 @@ async def Stock_Change_Cycle(self):
 
                                 if CHANCE_TIME in CHANCE_CHECKER:
                                     STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + int(CHANCE_RANDOM)
+                                    VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                    VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                    if VARIABLE_AMOUNT > 0:
+                                        PRICE_PL_MI_CHECK = 1
+                                        
+                                    elif VARIABLE_AMOUNT < 0:
+                                        PRICE_PL_MI_CHECK = -1
+                                    
+                                    if PRICE_PL_MI_CHECK == -1:    
+                                        TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                        USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                    elif PRICE_PL_MI_CHECK == 1:
+                                        TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                        USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                     pass
 
                                 else:
@@ -2350,18 +2386,61 @@ async def Stock_Change_Cycle(self):
 
                                         if LAST_PRICE_UPDOWN_CHANCE >= 8:
                                             STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + int(CHANCE_RANDOM)
+                                            VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                            VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                            if VARIABLE_AMOUNT > 0:
+                                                PRICE_PL_MI_CHECK = 1   
+                                        
+                                            elif VARIABLE_AMOUNT < 0:
+                                                PRICE_PL_MI_CHECK = -1
+                                    
+                                            if PRICE_PL_MI_CHECK == -1:    
+                                                TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                            elif PRICE_PL_MI_CHECK == 1:
+                                                TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                             pass
 
                                         else:
                                             STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + round(float(STOCK_CHANGE_RANGE), 0)
+                                            VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                            VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                            if VARIABLE_AMOUNT > 0:
+                                                PRICE_PL_MI_CHECK = 1   
+                                        
+                                            elif VARIABLE_AMOUNT < 0:
+                                                PRICE_PL_MI_CHECK = -1
+                                    
+                                            if PRICE_PL_MI_CHECK == -1:    
+                                                TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                            elif PRICE_PL_MI_CHECK == 1:
+                                                TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                             pass
                                     else:
                                         STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + round(float(STOCK_CHANGE_RANGE), 0)
+                                        VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                        VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                        if VARIABLE_AMOUNT > 0:
+                                            PRICE_PL_MI_CHECK = 1   
+                                    
+                                        elif VARIABLE_AMOUNT < 0:
+                                            PRICE_PL_MI_CHECK = -1
+                                
+                                        if PRICE_PL_MI_CHECK == -1:    
+                                            TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                            USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                        elif PRICE_PL_MI_CHECK == 1:
+                                            TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                            USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                         pass
                         
                             else:
                                 pass
                         
+
                         else:
                             BEFORE_PRICE_UPDOWN = STOCK_LIST_DATA[PRICE_UPDOWN_CHECK[COUNT]]
 
@@ -2379,6 +2458,20 @@ async def Stock_Change_Cycle(self):
 
                                 if CHANCE_TIME in CHANCE_CHECKER:
                                     STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + int(CHANCE_RANDOM)
+                                    VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                    VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                    if VARIABLE_AMOUNT > 0:
+                                        PRICE_PL_MI_CHECK = 1   
+                                
+                                    elif VARIABLE_AMOUNT < 0:
+                                        PRICE_PL_MI_CHECK = -1
+                            
+                                    if PRICE_PL_MI_CHECK == -1:    
+                                        TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                        USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                    elif PRICE_PL_MI_CHECK == 1:
+                                        TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                        USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                     pass
 
                                 else:
@@ -2387,26 +2480,74 @@ async def Stock_Change_Cycle(self):
 
                                         if LAST_PRICE_UPDOWN_CHANCE >= 8:
                                             STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + int(CHANCE_RANDOM)
+                                            VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                            VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                            if VARIABLE_AMOUNT > 0:
+                                                PRICE_PL_MI_CHECK = 1   
+                                        
+                                            elif VARIABLE_AMOUNT < 0:
+                                                PRICE_PL_MI_CHECK = -1
+                                    
+                                            if PRICE_PL_MI_CHECK == -1:    
+                                                TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                            elif PRICE_PL_MI_CHECK == 1:
+                                                TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                             pass
 
                                         else:
                                             STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + round(float(STOCK_CHANGE_RANGE), 0)
+                                            VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                            VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                            if VARIABLE_AMOUNT > 0:
+                                                PRICE_PL_MI_CHECK = 1   
+                                        
+                                            elif VARIABLE_AMOUNT < 0:
+                                                PRICE_PL_MI_CHECK = -1
+                                    
+                                            if PRICE_PL_MI_CHECK == -1:    
+                                                TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                            elif PRICE_PL_MI_CHECK == 1:
+                                                TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                             pass
                                     else:
                                         STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) + round(float(STOCK_CHANGE_RANGE), 0)
+                                        VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                        VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                        if VARIABLE_AMOUNT > 0:
+                                            PRICE_PL_MI_CHECK = 1   
+                                    
+                                        elif VARIABLE_AMOUNT < 0:
+                                            PRICE_PL_MI_CHECK = -1
+                                
+                                        if PRICE_PL_MI_CHECK == -1:    
+                                            TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                            USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                        elif PRICE_PL_MI_CHECK == 1:
+                                            TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                            USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                         pass
                             else:
                                 pass
-
+                        
+                                   
+                        
+                        
 
 
                 elif PRICE_CHANGE_PL_MI >= 6:
+                    
                     
                     
                     #await channel_st.send(f"STOCK_NAME = {STOCK_NAME}\nPRICE_CHANGE_PL_MI = {PRICE_CHANGE_PL_MI}\nSTOCK_PRICE_AFCH = {STOCK_PRICE_AFCH}\nSTOCK_CHANGE_RANGE = {round(float(STOCK_CHANGE_RANGE), 0)}\nCHANCE_RANDOM = {CHANCE_RANDOM}\n\n")
 
                     for COUNT in range(PRICE_UPDOWN_CHECK_COUNTER):
 
+
+                        
 
                         if PRICE_UPDOWN_CHECK[COUNT] not in STOCK_LIST_DATA:
                             STOCK_LIST_DATA[PRICE_UPDOWN_CHECK[COUNT]] = 0
@@ -2425,6 +2566,20 @@ async def Stock_Change_Cycle(self):
 
                                 if CHANCE_TIME in CHANCE_CHECKER:
                                     STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round((float(STOCK_CHANGE_RANGE) / 10), 0)
+                                    VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                    VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                    if VARIABLE_AMOUNT > 0:
+                                        PRICE_PL_MI_CHECK = 1   
+                                
+                                    elif VARIABLE_AMOUNT < 0:
+                                        PRICE_PL_MI_CHECK = -1
+                            
+                                    if PRICE_PL_MI_CHECK == -1:    
+                                        TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                        USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                    elif PRICE_PL_MI_CHECK == 1:
+                                        TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                        USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                     pass
 
                                 else:
@@ -2433,14 +2588,57 @@ async def Stock_Change_Cycle(self):
 
                                         if LAST_PRICE_UPDOWN_CHANCE >= 8:
                                             STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round((float(STOCK_CHANGE_RANGE) / 10), 0)
+                                            VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                            VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                            if VARIABLE_AMOUNT > 0:
+                                                PRICE_PL_MI_CHECK = 1   
+                                        
+                                            elif VARIABLE_AMOUNT < 0:
+                                                PRICE_PL_MI_CHECK = -1
+                                    
+                                            if PRICE_PL_MI_CHECK == -1:    
+                                                TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                            elif PRICE_PL_MI_CHECK == 1:
+                                                TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                             pass
 
                                         else:
                                             STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round(float(STOCK_CHANGE_RANGE), 0)
+                                            VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                            VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                            if VARIABLE_AMOUNT > 0:
+                                                PRICE_PL_MI_CHECK = 1   
+                                        
+                                            elif VARIABLE_AMOUNT < 0:
+                                                PRICE_PL_MI_CHECK = -1
+                                    
+                                            if PRICE_PL_MI_CHECK == -1:    
+                                                TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                            elif PRICE_PL_MI_CHECK == 1:
+                                                TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                             pass
                                     else:
                                         STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round(float(STOCK_CHANGE_RANGE), 0)
+                                        VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                        VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                        if VARIABLE_AMOUNT > 0:
+                                            PRICE_PL_MI_CHECK = 1   
+                                    
+                                        elif VARIABLE_AMOUNT < 0:
+                                            PRICE_PL_MI_CHECK = -1
+                                
+                                        if PRICE_PL_MI_CHECK == -1:    
+                                            TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                            USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                        elif PRICE_PL_MI_CHECK == 1:
+                                            TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                            USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                         pass
+                                    
                             else:
                                 pass
                             
@@ -2462,6 +2660,20 @@ async def Stock_Change_Cycle(self):
 
                                 if CHANCE_TIME in CHANCE_CHECKER:
                                     STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round((float(STOCK_CHANGE_RANGE) / 10), 0)
+                                    VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                    VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                    if VARIABLE_AMOUNT > 0:
+                                        PRICE_PL_MI_CHECK = 1   
+                                
+                                    elif VARIABLE_AMOUNT < 0:
+                                        PRICE_PL_MI_CHECK = -1
+                            
+                                    if PRICE_PL_MI_CHECK == -1:    
+                                        TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                        USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                    elif PRICE_PL_MI_CHECK == 1:
+                                        TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                        USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                     pass
 
                                 else:
@@ -2470,17 +2682,64 @@ async def Stock_Change_Cycle(self):
 
                                         if LAST_PRICE_UPDOWN_CHANCE >= 8:
                                             STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round((float(STOCK_CHANGE_RANGE) / 10), 0)
+                                            VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                            VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                            if VARIABLE_AMOUNT > 0:
+                                                PRICE_PL_MI_CHECK = 1   
+                                        
+                                            elif VARIABLE_AMOUNT < 0:
+                                                PRICE_PL_MI_CHECK = -1
+                                    
+                                            if PRICE_PL_MI_CHECK == -1:    
+                                                TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                            elif PRICE_PL_MI_CHECK == 1:
+                                                TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                             pass
 
                                         else:
                                             STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round(float(STOCK_CHANGE_RANGE), 0)
+                                            VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                            VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                            if VARIABLE_AMOUNT > 0:
+                                                PRICE_PL_MI_CHECK = 1   
+                                        
+                                            elif VARIABLE_AMOUNT < 0:
+                                                PRICE_PL_MI_CHECK = -1
+                                    
+                                            if PRICE_PL_MI_CHECK == -1:    
+                                                TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                            elif PRICE_PL_MI_CHECK == 1:
+                                                TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                                USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                             pass
                                     else:
                                         STOCK_PRICE_AFCH = int(STOCK_PRICE_BFCH) - round(float(STOCK_CHANGE_RANGE), 0)
+                                        VARIABLE_AMOUNT = int(STOCK_PRICE_AFCH) - int(STOCK_PRICE_BFCH)
+                                        VARIABLE_AMOUNT_LIST.append(VARIABLE_AMOUNT)
+                                        if VARIABLE_AMOUNT > 0:
+                                            PRICE_PL_MI_CHECK = 1   
+                                    
+                                        elif VARIABLE_AMOUNT < 0:
+                                            PRICE_PL_MI_CHECK = -1
+                                
+                                        if PRICE_PL_MI_CHECK == -1:    
+                                            TEXT_EMOJI = ":chart_with_downwards_trend:" 
+                                            USING_TEXT_EMOJI.append(TEXT_EMOJI)
+                                        elif PRICE_PL_MI_CHECK == 1:
+                                            TEXT_EMOJI = ":chart_with_upwards_trend:"
+                                            USING_TEXT_EMOJI.append(TEXT_EMOJI)
                                         pass
+                            
+                                                
+                        
                             else:
                                 pass
-
+                        
+                                
+                            
 
 
                 
@@ -2513,7 +2772,9 @@ async def Stock_Change_Cycle(self):
             for STOCK in range(ARRAY_COUNTER):
                 STOCK_NAME = str(CHANGE_PRICE_STOCK_LIST[STOCK])
                 STOCK_PRICE = Checking_Stock_Price(STOCK_NAME)
-                embed.add_field(name = f"{STOCK_NAME}", value = f"{STOCK_PRICE}원", inline = False)
+                TEXT_EMOJI = USING_TEXT_EMOJI[STOCK]
+                USING_VARIABLE_AMOUNT = VARIABLE_AMOUNT_LIST[STOCK]
+                embed.add_field(name = f"{TEXT_EMOJI} {STOCK_NAME}", value = f"{STOCK_PRICE}원\n변동금액 : {USING_VARIABLE_AMOUNT}원\n", inline = False)
             
             await DELAY_EMBED.edit(embed = embed)
 
@@ -2524,7 +2785,9 @@ async def Stock_Change_Cycle(self):
     else:
         pass  
 
-
+@bot.command()
+async def 테스트(ctx):
+    await ctx.send(":arrow_up: 99999원")
 
 
     
