@@ -1,22 +1,22 @@
-import bs4
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
-from discord.utils import get
-from discord import FFmpegPCMAudio
+import bs4#
+from selenium import webdriver#
+from selenium.webdriver.chrome.options import Options#
+from discord.utils import get#
+from discord import FFmpegPCMAudio#
 from discord.ext import commands # from discord.ext import tasks, commands
 from discord.ext import tasks #
 import discord #
 import asyncio #
 import time #
-import nacl
+import nacl#
 import sys
 sys.path.append("C:\\Users\\leegu\\AppData\\Local\\Programs\\Python\\Python38\\Scripts")
-from youtube_dl import YoutubeDL
+from youtube_dl import YoutubeDL#
 import random
 import datetime #
 import os
 import re
-from dotenv import load_dotenv
+from dotenv import load_dotenv#
 import json
 import csv
 
@@ -27,8 +27,8 @@ juns_image_dir = images_file_dir + "juns\\"
 han_image_dir = images_file_dir + "han\\"
 leesae_image_dir = images_file_dir + "leesae\\"
 bot = commands.Bot(command_prefix='!')
-TEST_BOT_TOKEN = 'ODI0NjU3OTY5MTEwODQzNDEy.YFyklQ.lnE6T-5IS_8ts8XMhD4CXdqzGB8' 
-WASHER_BOT_TOKEN = 'ODI4MjY3OTcwNTYwMDAwMDEw.YGnGqA.WjC4xSVMig4R55MkxhwGJGUX3W8'
+TEST_BOT_TOKEN = 'YOUR_BOT_TOKEN' 
+WASHER_BOT_TOKEN = 'YOUR_BOT_TOKEN'
 BOT_TOKEN = WASHER_BOT_TOKEN
 
 
@@ -49,7 +49,7 @@ Gather_Evidence_List = ["동규"]
 Gathered_Evidence_dir = "D:\\건보\\프로그램 관련\\Gathered_Evidence.txt"
 User_Data_dir = "D:\\건보\\동기화\\Naver MYBOX\\C언어반 예습\\매크로\\통돌이\\"
 #User_Data_dir = "C:\\Users\\leegu\\Desktop\\통돌이" #데스크탑
-SHOW_CURRENT_STOCK_LIST = ['롤', '마크', '발로란트', '배그', '오버워치', '나무위키', '산와머니', '순무코인', '히토미', '샘숭전자', '애풀', '세빈왕국', '테수라', '컴허브']
+SHOW_CURRENT_STOCK_LIST = ['롤', '마크', '발로란트', '배그', '오버워치', '나무위키', '산와머니', '순무코인', '히토미', '샘숭전자', '애풀', '세빈왕국', '테수라', '컴허브', '해이닉스', '시나리오테스트']
 
 subUrl_List = [] #각 과목의 클래스룸 링크를 받아오는 배열
 
@@ -2032,7 +2032,7 @@ async def 주식(ctx, *arg):
                     BUYER_MONEY = BUYER_DATA['USERMONEY']
 
                     if OBJ_TWO == "최대":
-                        BUY_AMOUNT = round((int(BUYER_MONEY) / int(STOCK_PRICE)), 0)
+                        BUY_AMOUNT = round((int(BUYER_MONEY) / int(STOCK_PRICE)), 0) - 1
                     else:
                         BUY_AMOUNT = int(OBJ_TWO)
                     TOTAL_PRICE = int(STOCK_PRICE) * int(BUY_AMOUNT)
@@ -2068,8 +2068,8 @@ async def 주식(ctx, *arg):
                         CURRENT_USER_STOCK = Checking_Stock(CMD_AUTHOR_USER, STOCK_NAME)
 
                         embed = discord.Embed(title = f"", descripton = f"")
-                        embed.add_field(name = f"보유자산 : ", value = f"{CURRENT_USER_MONEY}원", inline = True)
-                        embed.add_field(name = f"{STOCK_NAME} 보유 주식 : ", value = f"{CURRENT_USER_STOCK}주", inline = True)
+                        embed.add_field(name = f"보유자산", value = f"{CURRENT_USER_MONEY}원", inline = True)
+                        embed.add_field(name = f"{STOCK_NAME} 보유 주식", value = f"{CURRENT_USER_STOCK}주", inline = True)
                         embed.set_footer(text = CMD_AUTHOR_USER)                                
                         await ctx.send(embed = embed)
 
@@ -2142,8 +2142,8 @@ async def 주식(ctx, *arg):
                         CURRENT_USER_STOCK = Checking_Stock(CMD_AUTHOR_USER, STOCK_NAME)
 
                         embed = discord.Embed(title = f"", descripton = f"")
-                        embed.add_field(name = f"보유자산 : ", value = f"{CURRENT_USER_MONEY}원", inline = True)
-                        embed.add_field(name = f"{STOCK_NAME} 보유 주식 : ", value = f"{CURRENT_USER_STOCK}주", inline = True)
+                        embed.add_field(name = f"보유자산", value = f"{CURRENT_USER_MONEY}원", inline = True)
+                        embed.add_field(name = f"{STOCK_NAME} 보유 주식", value = f"{CURRENT_USER_STOCK}주", inline = True)
                         embed.set_footer(text = CMD_AUTHOR_USER)                                
                         await ctx.send(embed = embed)
 
@@ -2213,6 +2213,108 @@ async def 구제금융(ctx):
     await ctx.send(embed = embed)
 
 @bot.command()
+async def 환생(ctx):
+    CMD_AUTHOR_USER = ctx.author
+    NOW_TEST_CHECK = 0
+    ADMIN = "심심한데놀아줘#2140"
+    with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+        READ_USER_DATA = json.load(READ_USER_PROFILE)
+        READ_USER_PROFILE.close()
+
+    USER_MONEY = READ_USER_DATA['USERMONEY']
+    USER_OWN_STOCK_CHAECK_COUNTER = len(SHOW_CURRENT_STOCK_LIST)
+    
+    REINCARNATION_QUALIFICATION = 1
+    #=============================보유 주식 체크=============================
+    for COUNT in range(USER_OWN_STOCK_CHAECK_COUNTER):
+        STOCK_NAME = f"STOCK_{SHOW_CURRENT_STOCK_LIST[COUNT]}"
+        if CMD_AUTHOR_USER == ADMIN:
+            if NOW_TEST_CHECK == 1:
+                REINCARNATION_QUALIFICATION = 1
+            else:
+                if STOCK_NAME not in READ_USER_DATA:
+                    REINCARNATION_QUALIFICATION = REINCARNATION_QUALIFICATION + 0
+                else:
+                    REINCARNATION_QUALIFICATION = REINCARNATION_QUALIFICATION + 1
+        else:
+            if STOCK_NAME not in READ_USER_DATA:
+                REINCARNATION_QUALIFICATION = REINCARNATION_QUALIFICATION + 0
+            else:
+                REINCARNATION_QUALIFICATION = REINCARNATION_QUALIFICATION + 1
+    #=============================보유 주식 체크=============================
+
+    #=============================보유 자산 체크=============================
+    if USER_MONEY >= 5000000000: #50억
+        REINCARNATION_QUALIFICATION = REINCARNATION_QUALIFICATION + 0
+    else:
+        if NOW_TEST_CHECK == 1:
+            REINCARNATION_QUALIFICATION = 1
+        else:
+            REINCARNATION_QUALIFICATION = REINCARNATION_QUALIFICATION + 1
+    #=============================보유 자산 체크=============================
+
+    if REINCARNATION_QUALIFICATION == 1:
+        await ctx.send(embed = discord.Embed(title = f":warning: 환생 알림 :warning:", description = f"환생을 진행하게 되면 현재 당신의 자산 [{USER_MONEY}원] 전부\n사라지고 기본 시작금인 20만원으로 시작하게 됩니다.\n정말로 환생하시겠습니까?  [Y/N]"))
+        
+        def LAST_CHECK(MSG):
+            return MSG.author == CMD_AUTHOR_USER and MSG.channel.id == ctx.channel.id
+
+        CHECK_MSG = await bot.wait_for("Message", check = LAST_CHECK)
+        
+        if CHECK_MSG.content.lower in ("Y", "y", "Yes", "YES", "yes", "ㅛㄷㄴ", "ㅛ"):
+            #===========================================================환생 횟수 변경===========================================================
+            with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as WRITE_USER_PROFILE:
+                WRITE_USER_DATA = json.load(WRITE_USER_PROFILE)
+                WRITE_USER_PROFILE.close()
+
+            USER_MONEY = WRITE_USER_DATA['USERMONEY']
+            REINCARNATION_COUNT_CHECK = "REINCARNATION_COUNT"
+
+
+            if REINCARNATION_COUNT_CHECK not in WRITE_USER_DATA:
+                REINCARNATION_COUNT = 1
+
+            else:
+                REINCARNATION_COUNT = WRITE_USER_DATA["REINCARNATION_COUNT"]
+                REINCARNATION_COUNT = REINCARNATION_COUNT + 1
+
+
+            with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "w", encoding = "utf-8") as WRITE_USER_PROFILE:
+                WRITE_USER_DATA['USERMONEY'] = 200000
+                WRITE_USER_DATA["REINCARNATION_COUNT"] = REINCARNATION_COUNT
+                json.dump(WRITE_USER_DATA, WRITE_USER_PROFILE, indent = 4)
+            #===========================================================환생 횟수 변경===========================================================
+
+            #===========================================================유저 데이터 참조===========================================================
+            with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+                READ_USER_DATA = json.load(READ_USER_PROFILE)
+                READ_USER_PROFILE.close()
+            #===========================================================유저 데이터 참조===========================================================
+
+            SHOW_USER_MONEY = READ_USER_DATA['USERMONEY']    
+            SHOW_USER_REINCARNATION_COUNT = READ_USER_DATA['REINCARNATION_COUNT']
+            
+            await ctx.send("환생을 정상적으로 완료했습니다.")
+
+            embed = discord.Embed(title = f"", description = f"")
+            embed.add_field(name = f"보유자산", value = f"{SHOW_USER_MONEY}원", inline = True)
+            embed.add_field(name = f"환생횟수", value = f"{SHOW_USER_REINCARNATION_COUNT}회", inline = True)
+            embed.set_footer(text = f"{CMD_AUTHOR_USER}")
+
+            await ctx.send(embed = embed)
+
+
+        else:
+            await ctx.send("시간은 많으니 다시 생각해보세요")
+    else:
+        await ctx.send("당신은 환생조건에 부합하지 않습니다")
+        embed = discord.Embed(title = f"[##환생조건##]", description = f"")
+        embed.add_field(name = f"조건 1", value = f"보유자산 50억 이상", inline = False)
+        embed.add_field(name = f"조건 2", value = f"보유주식 전부 0주", inline = False)
+
+        await ctx.send(embed = embed)
+
+@bot.command()
 async def 가격초기화(ctx):
     WIPE_STOCK_LIST = SHOW_CURRENT_STOCK_LIST
     ARRAY_COUNTER = len(WIPE_STOCK_LIST)
@@ -2234,6 +2336,70 @@ async def 가격초기화(ctx):
 
     else:
         await ctx.send("당신은 이 명령어를 사용할 권한이 없습니다.")
+"""
+@bot.command()
+@commands.is_owner()
+async def 시나리오설정(ctx):
+    
+    
+    SCENARIO_DATA = {"SCENARIO_1": f"{Resister_USER}", "USERID": f"{Resister_USER_ID}", "USERMONEY": Welcom_Money}
+
+@bot.command()
+async def 주식정보(ctx, *arg):
+        
+        
+    Command = list(arg)
+    CMD_AUTHOR_USER = ctx.author
+    OBJ_COUNT = len(Command)
+    FUNC_NAME = Command[0]
+
+    if OBJ_COUNT == 2:
+        OBJ_ONE = Command[1]#STOCK_NAME
+        pass
+    
+    elif OBJ_COUNT == 3:
+        OBJ_ONE = Command[1]#STOCK_NAME
+        OBJ_TWO = Command[2]#BUY_AMOUNT / SELL_AMOUNT
+        pass
+
+    if FUNC_NAME == "목록":
+        embed = discord.Embed(title = f":clipboard: [##구매 가능 주식 정보##] :clipboard:", description = f"")
+        SHOW_STOCK_LIST_COUNTER = len(SHOW_CURRENT_STOCK_LIST)
+        STOCK_INFO_LIST = SHOW_CURRENT_STOCK_LIST
+        for STOCK_LIST_COUNT in range(SHOW_STOCK_LIST_COUNTER):
+            STOCK_NAME = str(STOCK_INFO_LIST[STOCK_LIST_COUNT])
+            embed.add_field(name = f"{STOCK_NAME}", value = "1단계 : 50만\n2단계 : 100만\n3단계 : 500만", inline = False)
+
+        await ctx.send(embed = embed)
+
+    elif FUNC_NAME == "구매":
+        STOCK_INFO_LIST = SHOW_CURRENT_STOCK_LIST
+
+        STOCK_NAME = str(OBJ_ONE)
+        INFO_PHASE = str(OBJ_TWO)
+
+        with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+            READ_USER_DATA = json.load(READ_USER_PROFILE)
+            READ_USER_PROFILE.close()
+
+        USER_MONEY = READ_USER_DATA['USERMONEY']
+
+        if INFO_PHASE == 1:
+            STOCK_INFO_PRICE = 500000
+
+        elif INFO_PHASE == 2:
+            STOCK_INFO_PRICE = 1000000
+
+        elif INFO_PHASE == 3:
+            STOCK_INFO_PRICE = 5000000
+
+        if USER_MONEY >= STOCK_INFO_PRICE:
+
+
+
+        await CMD_AUTHOR_USER.send(f"STOCK_NAME = {STOCK_NAME} / INFO_PHASE = {INFO_PHASE}")
+        await ctx.send("개인메세지 채널을 확인해주세요")
+"""
 
 @tasks.loop(seconds = 1)
 async def Stock_Change_Cycle(self):
@@ -2334,7 +2500,24 @@ async def Stock_Change_Cycle(self):
                 PRICE_UPDOWN_CHECK.append(PRICE_DOWN_CHECK)
 
                 PRICE_UPDOWN_CHECK_COUNTER = len(PRICE_UPDOWN_CHECK)
+                #================================================시나리오================================================#
+                """
+                #SCENARIO_NUM = random.randint(1, 10)
+                SCENARIO_NUM = 1
+                TEST_STOCK_NAME = "시나리오테스트"
+                STOCK_SCENARIO_CHECK = f"STOCK_SCENARIO_{SCENARIO_NUM}"
 
+                TEST_STOCK_CHECK = os.path.exists(f"{User_Data_dir}\\Stock_List\\{TEST_STOCK_NAME}.json")
+
+                if TEST_STOCK_CHECK == True:
+                    with open(f"{User_Data_dir}\\Stock_List\\{TEST_STOCK_NAME}.json", "r", encoding = "utf-8") as TEST_STOCK_PROFILE:
+                        TEST_STOCK_DATA = json.load(TEST_STOCK_PROFILE)
+                        TEST_STOCK_PROFILE.close()
+
+                    if STOCK_SCENARIO_CHECK not in TEST_STOCK_DATA:
+                        TEST_STOCK_DATA[STOCK_SCENARIO_CHECK] = ""
+                """
+                #================================================시나리오================================================#
                 if PRICE_CHANGE_PL_MI <= 5:
                     
                     
@@ -2787,8 +2970,19 @@ async def Stock_Change_Cycle(self):
 
 @bot.command()
 async def 테스트(ctx):
-    await ctx.send(":arrow_up: 99999원")
+    CMD_AUTHOR_USER = ctx.author
+    with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+        READ_USER_DATA = json.load(READ_USER_PROFILE)
+        READ_USER_PROFILE.close()
 
+    USER_MONEY = READ_USER_DATA['USERMONEY']
+    await ctx.send(embed = discord.Embed(title = f":warning: 환생 알림 :warning:", description = f"환생을 진행하게 되면 현재 당신의 자산 [{USER_MONEY}원] 전부\n사라지고 기본 시작금인 20만원으로 시작하게 됩니다.\n정말로 환생하시겠습니까?  [Y/N]"))
+
+@bot.command()
+async def DM테스트(ctx, *, message=None):
+    message = message or "This Message is sent via DM"
+    user = ctx.author
+    await user.send(message)
 
     
 
