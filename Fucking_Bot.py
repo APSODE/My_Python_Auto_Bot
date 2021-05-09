@@ -17,8 +17,12 @@ import datetime #
 import os
 import re
 from dotenv import load_dotenv#
+import numpy
 import json
 import csv
+import operator
+from operator import itemgetter
+
 
 images_file_dir = "D:\\건보\\동기화\\Naver MYBOX\\C언어반 예습\\매크로\\디스코드 봇 만들기\\images_file\\" #"D:\\images_file" #
 yunh_image_dir = images_file_dir + "yunh\\"
@@ -27,7 +31,7 @@ juns_image_dir = images_file_dir + "juns\\"
 han_image_dir = images_file_dir + "han\\"
 leesae_image_dir = images_file_dir + "leesae\\"
 bot = commands.Bot(command_prefix='!')
-TEST_BOT_TOKEN = 'YOUR_BOT_TOKEN' 
+TEST_BOT_TOKEN = 'YOUR_BOT_TOKEN'
 WASHER_BOT_TOKEN = 'YOUR_BOT_TOKEN'
 BOT_TOKEN = WASHER_BOT_TOKEN
 
@@ -49,8 +53,8 @@ Gather_Evidence_List = ["동규"]
 Gathered_Evidence_dir = "D:\\건보\\프로그램 관련\\Gathered_Evidence.txt"
 User_Data_dir = "D:\\건보\\동기화\\Naver MYBOX\\C언어반 예습\\매크로\\통돌이\\"
 #User_Data_dir = "C:\\Users\\leegu\\Desktop\\통돌이" #데스크탑
-SHOW_CURRENT_STOCK_LIST = ['롤', '마크', '발로란트', '배그', '오버워치', '나무위키', '산와머니', '순무코인', '히토미', '샘숭전자', '애풀', '세빈왕국', '테수라', '컴허브', '해이닉스', '시나리오테스트']
-
+SHOW_CURRENT_STOCK_LIST = ['롤', '마크', '발로란트', '배그', '오버워치', '나무위키', '산와머니', '순무코인', '히토미', '샘숭전자', '애풀', '세빈왕국', '테수라', '컴허브', '해이닉스', '기광월드']
+SHOW_CURRENT_DESIGNATION_LIST = ['죽음에서 돌아온 자', '저승길을 잘 아는']
 subUrl_List = [] #각 과목의 클래스룸 링크를 받아오는 배열
 
 #=========================================제일고============================================ 
@@ -1360,40 +1364,7 @@ async def 사진첩(ctx, *arg):
     elif ctx.channel != unLimit_ch:
         await ctx.send("여기는 다훈이에 의해 명령어를 칠 수 없게 변했어요")
 
-@bot.command()
-async def 변수테스트(ctx, *arg):
-    Command = list(arg)
-    CMD_AUTHOR_USER = ctx.author
-    LIST_COUNTER = len(Command)
 
-    if LIST_COUNTER == 1:
-        BUY_STOCK_NAME = str(Command[0])
-        pass
-
-    elif LIST_COUNTER == 2:
-        BUY_STOCK_NAME = str(Command[0])
-        BUY_STOCK_AMOUNT = int(Command[1])
-        pass
-
-    else:
-        await ctx.send("너무 많은 인자가 입력되었거나, 인자가 입력되지 않았습니다.")
-    
-    
-
-    with open(f"{User_Data_dir}\\Stock_List\\{BUY_STOCK_NAME}.json", "r", encoding = "utf-8") as STOCK_LIST_PROFILE:
-        STOCK_LIST_DATA = json.load(STOCK_LIST_PROFILE)
-        STOCK_LIST_PROFILE.close()
-
-    STOCK_NAME = str(STOCK_LIST_DATA['STOCK_NAME'])
-
-    with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as USER_PROFILE:
-        USER_DATA = json.load(USER_PROFILE)
-        USER_PROFILE.close()
-
-    with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "w", encoding = "utf-8") as USER_PROFILE:
-        USER_DATA[f'STOCK_{STOCK_NAME}'] = BUY_STOCK_AMOUNT
-        json.dump(USER_DATA, USER_PROFILE, indent = 4)
-        
 
     
 
@@ -1596,44 +1567,59 @@ async def 자산(ctx, arg: discord.Member = None):
     SHOW_STOCK_LIST = []
     #await ctx.send(f"명령어 입력한 사람 : {CMD_AUTHOR_USER}")
     if not arg:
-        try:
+        #try:
 
-            with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
-                READ_USER_DATA = json.load(READ_USER_PROFILE)
-                READ_USER_PROFILE.close()
+        with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+            READ_USER_DATA = json.load(READ_USER_PROFILE)
+            READ_USER_PROFILE.close()
+        USER_MONEY = READ_USER_DATA['USERMONEY']
+        embed = discord.Embed(title = f"[##현재 자산##]", description = f"")
+        embed.add_field(name = f":coin: 보유 현금 ", value = f"{USER_MONEY}원", inline = False)
 
-            USER_MONEY = READ_USER_DATA['USERMONEY']
+        if "REINCARNATION_COUNT" in READ_USER_DATA:
+            USER_REINCARNATION_COUNT = READ_USER_DATA['REINCARNATION_COUNT']
+            if USER_REINCARNATION_COUNT != 0:
+                embed.add_field(name = f":angel: 환생 횟수 ", value = f"{USER_REINCARNATION_COUNT}회", inline = False)
                 
-            embed = discord.Embed(title = f"[##현재 자산##]", description = f"")
-            embed.add_field(name = f":coin: 보유 현금 ", value = f"{USER_MONEY}원", inline = False)
-            #embed.add_field(indax = "STOCK", name = f"[보유 주식]", value = f"", inline = False)
-            for STOCK_COUNT in range(STOCK_LIST_COUNTER):
-                STOCK_NAME_BH = SHOW_CURRENT_STOCK_LIST[STOCK_COUNT]
-                STOCK_NAME_CHECK = f"STOCK_{STOCK_NAME_BH}"
-                if STOCK_NAME_CHECK in READ_USER_DATA:
-                    SHOW_STOCK_LIST.append(STOCK_NAME_BH) #뒤에 주식 이름
+            else:
+                pass
+        else:
+            pass
 
-            
-            SHOW_STOCK_LIST_COUNTER = len(SHOW_STOCK_LIST)
+        if "NOW_EQUIP_DESIGNATION" in READ_USER_DATA:
+            NOW_USER_EQUIP_DESIGNATION = READ_USER_DATA['NOW_EQUIP_DESIGNATION']
+            embed.add_field(name = f":label:현재 장착중인 칭호", value = f"{NOW_USER_EQUIP_DESIGNATION}", inline = False)
+        else:
+            pass
 
-            for STOCK_COUNT in range(SHOW_STOCK_LIST_COUNTER):
-                STOCK_NAME = SHOW_STOCK_LIST[STOCK_COUNT]
-                STOCK_NAME_CHECK = f'STOCK_{STOCK_NAME}'
-                if STOCK_NAME_CHECK in READ_USER_DATA:
-                    USER_OWN_STOCK_AMOUNT = READ_USER_DATA[STOCK_NAME_CHECK]
-                    if USER_OWN_STOCK_AMOUNT != 0:
-                        embed.add_field(name = f":receipt: {STOCK_NAME} ", value = f"{USER_OWN_STOCK_AMOUNT}주", inline = True)
-                    else:
-                        pass
-            embed.set_footer(text = f"{CMD_AUTHOR_USER}")
-            await ctx.send(embed = embed)
+        #embed.add_field(indax = "STOCK", name = f"[보유 주식]", value = f"", inline = False)
+        for STOCK_COUNT in range(STOCK_LIST_COUNTER):
+            STOCK_NAME_BH = SHOW_CURRENT_STOCK_LIST[STOCK_COUNT]
+            STOCK_NAME_CHECK = f"STOCK_{STOCK_NAME_BH}"
+            if STOCK_NAME_CHECK in READ_USER_DATA:
+                SHOW_STOCK_LIST.append(STOCK_NAME_BH) #뒤에 주식 이름
+
+        
+        SHOW_STOCK_LIST_COUNTER = len(SHOW_STOCK_LIST)
+
+        for STOCK_COUNT in range(SHOW_STOCK_LIST_COUNTER):
+            STOCK_NAME = SHOW_STOCK_LIST[STOCK_COUNT]
+            STOCK_NAME_CHECK = f'STOCK_{STOCK_NAME}'
+            if STOCK_NAME_CHECK in READ_USER_DATA:
+                USER_OWN_STOCK_AMOUNT = READ_USER_DATA[STOCK_NAME_CHECK]
+                if USER_OWN_STOCK_AMOUNT != 0:
+                    embed.add_field(name = f":receipt: {STOCK_NAME} ", value = f"{USER_OWN_STOCK_AMOUNT}주", inline = True)
+                else:
+                    pass
+        embed.set_footer(text = f"{CMD_AUTHOR_USER}")
+        await ctx.send(embed = embed)
             
 
 
             
         
-        except:
-            await ctx.send(f"[{USER_NAME}]님의 데이터가 존재하지 않습니다.")
+        #except:
+        #    await ctx.send(f"[{USER_NAME}]님의 데이터가 존재하지 않습니다.")
 
     else:
         try:
@@ -1642,9 +1628,25 @@ async def 자산(ctx, arg: discord.Member = None):
                 READ_USER_PROFILE.close()
 
             USER_MONEY = READ_USER_DATA['USERMONEY']
-                
             embed = discord.Embed(title = f"[##현재 자산##]", description = f"")
             embed.add_field(name = f":coin: 보유 현금 ", value = f"{USER_MONEY}원", inline = False)
+            if "REINCARNATION_COUNT" in READ_USER_DATA:
+                USER_REINCARNATION_COUNT = READ_USER_DATA['REINCARNATION_COUNT']
+                if USER_REINCARNATION_COUNT != 0:
+                    embed.add_field(name = f":angel: 환생 횟수 ", value = f"{USER_REINCARNATION_COUNT}회", inline = False)
+                else:
+                    pass
+            else:
+                pass
+            
+            if "NOW_EQUIP_DESIGNATION" in READ_USER_DATA:
+                NOW_USER_EQUIP_DESIGNATION = READ_USER_DATA['NOW_EQUIP_DESIGNATION']
+                embed.add_field(name = f":label:현재 장착중인 칭호", value = f"{NOW_USER_EQUIP_DESIGNATION}", inline = False)
+            
+            else:
+                pass
+
+                
             #embed.add_field(indax = "STOCK", name = f"[보유 주식]", value = f"", inline = False)
             for STOCK_COUNT in range(STOCK_LIST_COUNTER):
                 STOCK_NAME_BH = SHOW_CURRENT_STOCK_LIST[STOCK_COUNT]
@@ -1662,6 +1664,7 @@ async def 자산(ctx, arg: discord.Member = None):
                     USER_OWN_STOCK_AMOUNT = READ_USER_DATA[STOCK_NAME_CHECK]
                     if USER_OWN_STOCK_AMOUNT != 0:
                         embed.add_field(name = f":receipt: {STOCK_NAME} ", value = f"{USER_OWN_STOCK_AMOUNT}주", inline = True)
+                        
                     else:
                         pass
 
@@ -1674,6 +1677,458 @@ async def 자산(ctx, arg: discord.Member = None):
         
         except:
             await ctx.send(f"[{USER_NAME}]님의 데이터가 존재하지 않습니다.")
+
+@bot.command()
+async def 자산순위(ctx):
+    USER_TOTAL_MONEY_LIST = []
+    USER_STOCK_PRICE_LIST = [] #값어치가 환산된 주식 가치를 저장
+    USER_RANKING_MONEY_LIST = []
+    CURRENT_STOCK_LIST = SHOW_CURRENT_STOCK_LIST
+    TOTAL_USER_OWN_STOCK_PRICE = 0 #환산된 주식 값어치를 합산하여 저장하는 곳
+    FUCKYOU_IM_GIVEUP = []
+    LAST_CHECK_LIST = []
+    USER_RANKING_EMOJI_LIST = [":first_place:", ":second_place:", ":third_place:"]
+    embed = discord.Embed(title = f":medal: 총 자산 순위 :medal:", description = f"")
+    embed_t = discord.Embed(title = f"test", description = "")
+
+    #PART1
+    #================================================유저의 총자산 구하는 코드================================================
+    #유저의 주식 값어치와, 유저의 돈을 가져옴
+    USER_DATA_FILE_LIST = os.listdir(f"{User_Data_dir}\\User_data\\")
+    USER_DATA_FILE_LIST_COUNTER = len(USER_DATA_FILE_LIST)
+    for COUNT in range(USER_DATA_FILE_LIST_COUNTER):
+        USER_DATA_FILE = USER_DATA_FILE_LIST[COUNT]
+
+        with open(f"{User_Data_dir}\\User_Data\\{USER_DATA_FILE}", "r", encoding = "utf-8") as READ_USER_PROFILE:
+            READ_USER_DATA = json.load(READ_USER_PROFILE)
+            READ_USER_PROFILE.close()
+
+        #주식 값어치 환산
+        CURRENT_STOCK_LIST_COUNTER = len(CURRENT_STOCK_LIST)
+        for COUNT in range(CURRENT_STOCK_LIST_COUNTER):
+            STOCK_NAME = CURRENT_STOCK_LIST[COUNT]
+            CURRENT_STOCK_CHECK = f"STOCK_{STOCK_NAME}"
+
+            if CURRENT_STOCK_CHECK in READ_USER_DATA:
+                USER_OWN_STOCK_COUNT = READ_USER_DATA[CURRENT_STOCK_CHECK]
+                with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "r", encoding = "utf-8") as READ_STOCK_PROFILE:
+                    READ_STOCK_DATA = json.load(READ_STOCK_PROFILE)
+                    READ_STOCK_PROFILE.close()
+
+                CURRENT_STOCK_PRICE = READ_STOCK_DATA["STOCK_PRICE"]
+                CONVERSION_USER_OWN_STOCK_PRICE = CURRENT_STOCK_PRICE * USER_OWN_STOCK_COUNT
+                USER_STOCK_PRICE_LIST.append(CONVERSION_USER_OWN_STOCK_PRICE)
+
+            else:
+                CONVERSION_USER_OWN_STOCK_PRICE = 0
+                USER_STOCK_PRICE_LIST.append(CONVERSION_USER_OWN_STOCK_PRICE)
+
+        
+
+
+        #환산된 주식 값어치를 합산하여 TOTAL_USER_OWN_STOCK_PRICE에 저장
+        USER_STOCK_PRICE_LIST_COUNTER = len(USER_STOCK_PRICE_LIST)
+        for COUNT in range(USER_STOCK_PRICE_LIST_COUNTER):
+            STOCK_PRICE = USER_STOCK_PRICE_LIST[COUNT]
+            TOTAL_USER_OWN_STOCK_PRICE = TOTAL_USER_OWN_STOCK_PRICE + STOCK_PRICE
+        USER_STOCK_PRICE_LIST = []
+        #유저의 현재 현금 자산
+        USER_MONEY = READ_USER_DATA["USERMONEY"]
+        USER_TOTAL_MONEY = USER_MONEY + TOTAL_USER_OWN_STOCK_PRICE
+        USER_TOTAL_MONEY_LIST.append(USER_TOTAL_MONEY)
+        TOTAL_USER_OWN_STOCK_PRICE = 0
+        #유저의 총 자산을 [USER_TOTAL_MONEY_LIST]배열에 저장
+    #USER_TOTAL_MONEY_LIST 배열에 유저의 총자산이 저장되어 있음
+    #================================================유저의 총자산 구하는 코드================================================
+    #await ctx.send(f"PART1_USER_TOTAL_MONEY_LIST = {USER_TOTAL_MONEY_LIST}")
+    #await ctx.send(f"PART1_USER_STOCK_PRICE_LIST = {USER_STOCK_PRICE_LIST}")
+    #PART2
+    #================================================유저의 총자산을 크기대로 정렬하는 코드================================================
+    USER_TOTAL_MONEY_LIST = numpy.array(USER_TOTAL_MONEY_LIST)
+    USER_RANKING_MONEY_LIST = numpy.sort(USER_TOTAL_MONEY_LIST)[::-1]
+    #USER_RANKING_MONEY_LIST 배열에 유저의 총자산이 크기 순으로 정렬되어 있음 
+    #================================================유저의 총자산을 크기대로 정렬하는 코드================================================
+    #await ctx.send(f"PART2 = {USER_RANKING_MONEY_LIST}")
+    #await ctx.send(f"TEST_VALUE = {USER_RANKING_MONEY_LIST}")
+
+    #================================================유저의 총자산 순위를 비교하여 알맞게 순위 임베드 추가하는 코드================================================
+    CHECKING_USER_TOTAL_MONEY = USER_RANKING_MONEY_LIST
+    USER_RANKING_MONEY_LIST = []
+
+    USER_DATA_FILE_LIST = os.listdir(f"{User_Data_dir}\\User_data\\")
+    USER_DATA_FILE_LIST_COUNTER = len(USER_DATA_FILE_LIST)
+    for COUNT in range(USER_DATA_FILE_LIST_COUNTER):
+        USER_DATA_FILE = USER_DATA_FILE_LIST[COUNT]
+
+        with open(f"{User_Data_dir}\\User_Data\\{USER_DATA_FILE}", "r", encoding = "utf-8") as READ_USER_PROFILE:
+            READ_USER_DATA = json.load(READ_USER_PROFILE)
+            READ_USER_PROFILE.close()
+
+        #주식 값어치 환산
+        CURRENT_STOCK_LIST_COUNTER = len(CURRENT_STOCK_LIST)
+        for COUNT in range(CURRENT_STOCK_LIST_COUNTER):
+            STOCK_NAME = CURRENT_STOCK_LIST[COUNT]
+            CURRENT_STOCK_CHECK = f"STOCK_{STOCK_NAME}"
+
+            if CURRENT_STOCK_CHECK in READ_USER_DATA:
+                USER_OWN_STOCK_COUNT = READ_USER_DATA[CURRENT_STOCK_CHECK]
+                with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "r", encoding = "utf-8") as READ_STOCK_PROFILE:
+                    READ_STOCK_DATA = json.load(READ_STOCK_PROFILE)
+                    READ_STOCK_PROFILE.close()
+
+                CURRENT_STOCK_PRICE = READ_STOCK_DATA["STOCK_PRICE"]
+                CONVERSION_USER_OWN_STOCK_PRICE = CURRENT_STOCK_PRICE * USER_OWN_STOCK_COUNT
+                USER_STOCK_PRICE_LIST.append(CONVERSION_USER_OWN_STOCK_PRICE)
+
+            else:
+                CONVERSION_USER_OWN_STOCK_PRICE = 0
+                USER_STOCK_PRICE_LIST.append(CONVERSION_USER_OWN_STOCK_PRICE)
+
+        #환산된 주식 값어치를 합산하여 TOTAL_USER_OWN_STOCK_PRICE에 저장
+        USER_STOCK_PRICE_LIST_COUNTER = len(USER_STOCK_PRICE_LIST)
+        for COUNT in range(USER_STOCK_PRICE_LIST_COUNTER):
+            STOCK_PRICE = USER_STOCK_PRICE_LIST[COUNT]
+            TOTAL_USER_OWN_STOCK_PRICE = TOTAL_USER_OWN_STOCK_PRICE + STOCK_PRICE
+        USER_STOCK_PRICE_LIST = []
+        #유저의 현재 현금 자산
+        USER_MONEY = READ_USER_DATA["USERMONEY"]
+        USER_NAME = READ_USER_DATA["USERNAME"]
+        #유저의 현재 총 자산
+        USER_TOTAL_MONEY = USER_MONEY + TOTAL_USER_OWN_STOCK_PRICE
+        TOTAL_USER_OWN_STOCK_PRICE = 0
+        #await ctx.send(f"USER_TOTAL_MONEY = {USER_TOTAL_MONEY} / USER_NAME = {USER_NAME} / USER_MONEY = {USER_MONEY}") #처리 완료
+        #CHECKING_USER_TOTAL_MONEY = USER_TOTAL_MONEY_LIST
+        CHECKING_USER_TOTAL_MONEY = numpy.array(CHECKING_USER_TOTAL_MONEY)
+        CHECKING_USER_TOTAL_MONEY = numpy.sort(CHECKING_USER_TOTAL_MONEY)[::-1]
+        
+        CHECKING_USER_TOTAL_MONEY_COUNTER = len(CHECKING_USER_TOTAL_MONEY)
+        """
+        await ctx.send(f"CHECKING_USER_TOTAL_MONEY_COUNTER = {CHECKING_USER_TOTAL_MONEY_COUNTER}")
+        for COUNT in range(CHECKING_USER_TOTAL_MONEY_COUNTER):
+            if COUNT <= 13:
+                CHECKING_USER_TOTAL_MONEY_VALUE = CHECKING_USER_TOTAL_MONEY[COUNT]
+                embed_t.add_field(name = f"{COUNT + 1}번", value = f"{CHECKING_USER_TOTAL_MONEY_VALUE}")
+            elif COUNT == 14:
+                CHECKING_USER_TOTAL_MONEY_VALUE = CHECKING_USER_TOTAL_MONEY[COUNT]
+                embed_t.add_field(name = f"{COUNT + 1}번", value = f"{CHECKING_USER_TOTAL_MONEY_VALUE}")
+                break
+            else:
+                pass
+        """    
+
+        for COUNT in range(CHECKING_USER_TOTAL_MONEY_COUNTER):
+            
+            CHECKING_USER_TOTAL_MONEY_VALUE = CHECKING_USER_TOTAL_MONEY[COUNT]
+            if USER_TOTAL_MONEY == CHECKING_USER_TOTAL_MONEY_VALUE:
+                #USER_NAME = READ_USER_DATA["USERNAME"] #line 1744 ~ line 1746 까지의 코드에서 나온 유저 이름 
+                with open(f"{User_Data_dir}\\User_Data\\{USER_NAME}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+                    READ_USER_DATA = json.load(READ_USER_PROFILE)
+                    READ_USER_PROFILE.close()
+
+                USER_TOTAL_MONEY_CHECK = "USER_TOTAL_MONEY"
+                
+                if USER_TOTAL_MONEY_CHECK in READ_USER_DATA:
+                    READ_USER_DATA["USER_TOTAL_MONEY"] = USER_TOTAL_MONEY
+                    with open(f"{User_Data_dir}\\User_Data\\{USER_NAME}.json", "w", encoding = "utf-8") as WRITE_USER_PROFILE:
+                        json.dump(READ_USER_DATA, WRITE_USER_PROFILE, indent = 4)
+                else:
+                    READ_USER_DATA["USER_TOTAL_MONEY"] = USER_TOTAL_MONEY
+                    with open(f"{User_Data_dir}\\User_Data\\{USER_NAME}.json", "w", encoding = "utf-8") as WRITE_USER_PROFILE:
+                        json.dump(READ_USER_DATA, WRITE_USER_PROFILE, indent = 4)
+              
+                    #embed.add_field(name = f"{USER_RANKING_TEXT} {USER_NAME}", value = f"**{USER_TOTAL_MONEY}원**") 
+                    #embed.add_field(name = f"{USER_RANKING_TEXT} {USER_NAME}", value = f"{USER_TOTAL_MONEY}원")
+            else:
+                pass
+
+    USER_DATA_FILE_LIST = os.listdir(f"{User_Data_dir}\\User_data\\")
+    USER_DATA_FILE_LIST_COUNTER = len(USER_DATA_FILE_LIST)
+    
+    for COUNT in range(USER_DATA_FILE_LIST_COUNTER):
+        USER_DATA_FILE = USER_DATA_FILE_LIST[COUNT]
+
+        with open(f"{User_Data_dir}\\User_Data\\{USER_DATA_FILE}", "r", encoding = "utf-8") as READ_USER_PROFILE:
+            READ_USER_DATA = json.load(READ_USER_PROFILE)
+            READ_USER_PROFILE.close()
+
+        USER_TOTAL_MONEY = READ_USER_DATA["USER_TOTAL_MONEY"]
+        LAST_CHECK_LIST.append(USER_TOTAL_MONEY)
+
+    LAST_CHECK_LIST = numpy.array(LAST_CHECK_LIST)
+    LAST_CHECK_LIST = numpy.sort(LAST_CHECK_LIST)[::-1]
+    LAST_CHECK_LIST_COUNTER = len(LAST_CHECK_LIST)
+    
+    for COUNT in range(LAST_CHECK_LIST_COUNTER):
+        LAST_CHECK_LIST_VALUE = LAST_CHECK_LIST[COUNT]
+        
+        USER_DATA_FILE_LIST = os.listdir(f"{User_Data_dir}\\User_data\\")
+        USER_DATA_FILE_LIST_COUNTER = len(USER_DATA_FILE_LIST)
+        for COUNT_1 in range(USER_DATA_FILE_LIST_COUNTER):
+            USER_DATA_FILE = USER_DATA_FILE_LIST[COUNT_1]
+
+            with open(f"{User_Data_dir}\\User_Data\\{USER_DATA_FILE}", "r", encoding = "utf-8") as READ_USER_PROFILE:
+                READ_USER_DATA = json.load(READ_USER_PROFILE)
+                READ_USER_PROFILE.close()
+            
+            USER_TOTAL_MONEY = READ_USER_DATA["USER_TOTAL_MONEY"]
+            USER_NAME = READ_USER_DATA["USERNAME"]
+
+            if USER_TOTAL_MONEY == LAST_CHECK_LIST_VALUE:
+                if COUNT <= 2:
+                    USER_RANKING_TEXT = USER_RANKING_EMOJI_LIST[COUNT]
+                    embed.add_field(name = f"{USER_RANKING_TEXT} {USER_NAME}", value = f"**{USER_TOTAL_MONEY}원**") 
+                else:
+                    USER_RANKING_TEXT = f"{COUNT + 1}등"
+                    embed.add_field(name = f"{USER_RANKING_TEXT} {USER_NAME}", value = f"**{USER_TOTAL_MONEY}원**") 
+    
+
+
+    #await ctx.send(f"USER_TOTAL_MONEY = {USER_TOTAL_MONEY}")
+    #await ctx.send(f"TOTAL_USER_OWN_STOCK_PRICE = {TOTAL_USER_OWN_STOCK_PRICE}")
+    #================================================유저의 총자산 순위를 비교하여 알맞게 순위 임베드 추가하는 코드================================================
+
+    #================================================임베드 출력 코드================================================
+    embed.set_footer(text = "현재의 주식 가격으로 모든 주식이 환산되어 순위가 책정 되었습니다")
+    await ctx.send(embed = embed)
+    #await ctx.send(embed = embed_t)
+
+@bot.command()
+async def 칭호(ctx, *arg):
+    Command = []
+    Command = list(arg)
+    FUNC_NAME = Command[0]
+    CMD_COUNTER = len(Command)
+    CMD_AUTHOR_USER = ctx.author
+    CMD_AUTHOR_USER_DATA_FILE = f"{CMD_AUTHOR_USER}.json"
+    NOW_DESIGNATION_LIST = SHOW_CURRENT_DESIGNATION_LIST
+    USER_OWN_DESIGNATION = []
+
+    if CMD_COUNTER == 2:
+        OBJ_ONE = Command[1]
+        pass
+    elif CMD_COUNTER == 3:
+        OBJ_ONE = Command[1]
+        OBJ_TWO = Command[2]
+        pass
+
+    if FUNC_NAME == "목록":
+        if CMD_COUNTER == 2:
+            CHECKING_MODE = str(OBJ_ONE)
+
+        if CHECKING_MODE == "전체":
+            await ctx.send("아직 제작중")
+
+        elif CHECKING_MODE == "자신":
+            """
+            USER_DATA_FILE_DIR = f"{User_Data_dir}\\User_Data\\"
+            USER_DATA_FILE_NAME_LIST = os.listdir(USER_DATA_FILE_DIR)
+            USER_DATA_FILE_NAME_LIST_COUNTER = len(USER_DATA_FILE_NAME_LIST)
+            for COUNT in range(USER_DATA_FILE_NAME_LIST_COUNTER):
+                USER_DATA_FILE_NAME = USER_DATA_FILE_NAME_LIST[COUNT]
+                if USER_DATA_FILE_NAME == CMD_AUTHOR_USER_DATA_FILE:
+                    USER_DATA_FILE = USER_DATA_FILE_NAME
+                else:
+                    pass
+            """
+            USER_DATA_FILE = CMD_AUTHOR_USER
+            with open(f"{User_Data_dir}\\User_Data\\{USER_DATA_FILE}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+                READ_USER_DATA = json.load(READ_USER_PROFILE)
+                READ_USER_PROFILE.close()
+
+            TITLE_LIST_COUNTER = len(SHOW_CURRENT_DESIGNATION_LIST)
+
+            for TITLE_LIST in range(TITLE_LIST_COUNTER):
+                DESIGNATION_NAME = SHOW_CURRENT_DESIGNATION_LIST[TITLE_LIST]
+                if DESIGNATION_NAME in READ_USER_DATA:
+                    DESIGNATION_VALUE = READ_USER_DATA[DESIGNATION_NAME]
+                    if DESIGNATION_VALUE == 1:
+                        USER_OWN_DESIGNATION.append(DESIGNATION_NAME)
+                    else:
+                        pass
+                else:
+                    
+                    with open(f"{User_Data_dir}\\User_Data\\{USER_DATA_FILE}.json", "w", encoding = "utf-8") as WRITE_USER_PROFILE:
+                        READ_USER_DATA[DESIGNATION_NAME] = 0
+                        json.dump(READ_USER_DATA, WRITE_USER_PROFILE, indent = 4)
+                    #DESIGNATION_NAME = SHOW_CURRENT_DESIGNATION_LIST[TITLE_LIST]
+                    #READ_USER_DATA에 존재하지 않는 DESIGNATION_NAME을 JSON파일에 새로 추가 작성한다.
+
+                    with open(f"{User_Data_dir}\\User_Data\\{USER_DATA_FILE}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+                        READ_USER_DATA = json.load(READ_USER_PROFILE)
+                        READ_USER_PROFILE.close()
+
+                    USER_REINCARNATION_COUNT = READ_USER_DATA["REINCARNATION_COUNT"]
+
+                    DESIGNATION_DATA_FILE_DIR = f"{User_Data_dir}\\Designation_List\\"
+                    DESIGNATION_DATA_FILE_NAME_LIST = os.listdir(DESIGNATION_DATA_FILE_DIR)
+                    DESIGNATION_DATA_FILE_NAME_LIST_COUNTER = len(DESIGNATION_DATA_FILE_NAME_LIST)
+                    
+                    for COUNT in range(DESIGNATION_DATA_FILE_NAME_LIST_COUNTER):
+
+                        DESIGNATION_DATA_FILE_NAME = DESIGNATION_DATA_FILE_NAME_LIST[COUNT]
+
+                        with open(f"{User_Data_dir}\\Designation_List\\{DESIGNATION_DATA_FILE_NAME}", "r", encoding = "utf-8") as READ_DESIGNATION_PROFILE:
+                            READ_DESIGNATION_DATA = json.load(READ_DESIGNATION_PROFILE)
+                            READ_DESIGNATION_PROFILE.close()
+
+                        
+                        REQUIRE_USER_REINCARNATION_COUNT = READ_DESIGNATION_DATA["REQUIRE_USER_REINCARNATION_COUNT"]
+
+                        if USER_REINCARNATION_COUNT >= REQUIRE_USER_REINCARNATION_COUNT:
+                            DESIGNATION_QUALIFICATION = 1
+
+                        else:
+                            DESIGNATION_QUALIFICATION = 0
+                        
+                        READ_USER_DATA[DESIGNATION_NAME] = DESIGNATION_QUALIFICATION
+                        with open(f"{User_Data_dir}\\User_Data\\{USER_DATA_FILE}.json", "w", encoding = "utf-8") as WRITE_USER_PROFILE:
+                            json.dump(READ_USER_DATA, WRITE_USER_PROFILE, indent = 4)
+
+                        #유저의 환생 횟수와 칭호의 필요 환생횟수를 비교하여 활성화 여부를 판단
+                            
+                        with open(f"{User_Data_dir}\\User_Data\\{USER_DATA_FILE}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+                            READ_USER_DATA = json.load(READ_USER_PROFILE)
+                            READ_USER_PROFILE.close()
+                        
+                        DESIGNATION_VALUE = READ_USER_DATA[DESIGNATION_NAME]
+                        if DESIGNATION_VALUE == 1:
+                            USER_OWN_DESIGNATION.append(DESIGNATION_NAME)
+                        else:
+                            pass
+
+            embed = discord.Embed(title = f":card_index: 현재 착용 가능 칭호 목록 :card_index:", description = f"")    
+            USER_OWN_DESIGNATION_COUNTER = len(USER_OWN_DESIGNATION)
+            for COUNT in range(USER_OWN_DESIGNATION_COUNTER):
+                USER_OWN_DESIGNATION_NAME = USER_OWN_DESIGNATION[COUNT]
+                with open(f"{User_Data_dir}\\Designation_List\\{USER_OWN_DESIGNATION_NAME}.json", "r", encoding = "utf-8") as READ_DESIGNATION_PROFILE:
+                    READ_DESIGNATION_DATA = json.load(READ_DESIGNATION_PROFILE)
+                    READ_DESIGNATION_PROFILE.close()
+                REQUIRE_USER_REINCARNATION_COUNT = READ_DESIGNATION_DATA["REQUIRE_USER_REINCARNATION_COUNT"]
+                embed.add_field(name = f":beginner:{USER_OWN_DESIGNATION_NAME}:beginner:", value = f"조건 : 환생 횟수 {REQUIRE_USER_REINCARNATION_COUNT}회 이상", inline = False)
+            embed.set_footer(text = CMD_AUTHOR_USER)
+            await ctx.send(embed = embed)
+            #임베드 출력 성공
+
+    elif FUNC_NAME == "설정":
+        if CMD_COUNTER == 5:
+            DESIGNATION_NAME_PART1 = Command[1]
+            DESIGNATION_NAME_PART2 = Command[2]
+            DESIGNATION_NAME_PART3 = Command[3]
+            DESIGNATION_NAME = str(DESIGNATION_NAME_PART1 + " " + DESIGNATION_NAME_PART2 + " " + DESIGNATION_NAME_PART3)
+            EQUIP_WHETHER = str(Command[4])
+            EQUIP_STATUS_POSITIVE = ["wkdckr", "ckrdyd", "장착", "착용"]
+            EQUIP_STATUS_NEGATIVE = ["gowp", "해제"]
+
+            with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+                READ_USER_DATA = json.load(READ_USER_PROFILE)
+                READ_USER_PROFILE.close()
+
+            if EQUIP_WHETHER in EQUIP_STATUS_POSITIVE:
+                NOW_EQUIP_DESIGNATION_CHECK = "NOW_EQUIP_DESIGNATION"
+                
+
+                if NOW_EQUIP_DESIGNATION_CHECK in READ_USER_DATA:
+                    
+                    NOW_USER_EQUIP_DESIGNATION = READ_USER_DATA["NOW_EQUIP_DESIGNATION"]
+                    with open(f"{User_Data_dir}\\Designation_List\\{DESIGNATION_NAME}.json", "r", encoding = "utf-8") as READ_DESIGNATION_PROFILE:
+                        READ_DESIGNATION_DATA = json.load(READ_DESIGNATION_PROFILE)
+                        READ_DESIGNATION_PROFILE.close()
+                    REQUIREED_USER_REINCARNATION_COUNT = READ_DESIGNATION_DATA["REQUIRE_USER_REINCARNATION_COUNT"]
+                    if "REINCARNATION_COUNT" in READ_USER_DATA:
+                        USER_CURRENT_REINCARNATION_COUNT = READ_USER_DATA["REINCARNATION_COUNT"]
+                    else:
+                        USER_CURRENT_REINCARNATION_COUNT = 0
+                    
+                    
+                    if USER_CURRENT_REINCARNATION_COUNT >= REQUIREED_USER_REINCARNATION_COUNT:
+                        
+                        if NOW_USER_EQUIP_DESIGNATION == DESIGNATION_NAME:
+                            
+                            await ctx.send(f"칭호[{DESIGNATION_NAME}]는 현재 이미 장착중인 칭호 입니다.")
+
+                        else:
+                            
+                            READ_USER_DATA["NOW_EQUIP_DESIGNATION"] = DESIGNATION_NAME
+                            with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "w", encoding = "utf-8") as WRITE_USER_PROFILE:
+                                json.dump(READ_USER_DATA, WRITE_USER_PROFILE, indent = 4)
+
+                            with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+                                READ_USER_DATA = json.load(READ_USER_PROFILE)
+                                READ_USER_PROFILE.close()
+                            
+                            with open(f"{User_Data_dir}\\Designation_List\\{DESIGNATION_NAME}.json", "r", encoding = "utf-8") as READ_DESIGNATION_PROFILE:
+                                READ_DESIGNATION_DATA = json.load(READ_DESIGNATION_PROFILE)
+                                READ_DESIGNATION_PROFILE.close()
+
+                            DESIGNATION_QUALIFICATION = READ_DESIGNATION_DATA["REQUIRE_USER_REINCARNATION_COUNT"]
+                            NOW_USER_DESIGNATION_NAME = READ_USER_DATA["NOW_EQUIP_DESIGNATION"]
+
+                            embed = discord.Embed(title = f"##현재 당신이 장착하고 있는 칭호##", description = "")
+                            embed.add_field(name = f":beginner: {NOW_USER_DESIGNATION_NAME} :beginner:", value = f"조건 : 환생 횟수 {DESIGNATION_QUALIFICATION}회 이상")
+                            await ctx.send(embed = embed)
+                    else:
+                        await ctx.send(f"당신은 [{DESIGNATION_NAME}]칭호를 장착할 권한이 없습니다.")
+
+                else:
+                    
+                    with open(f"{User_Data_dir}\\Designation_List\\{DESIGNATION_NAME}.json", "r", encoding = "utf-8") as READ_DESIGNATION_PROFILE:
+                        READ_DESIGNATION_DATA = json.load(READ_DESIGNATION_PROFILE)
+                        READ_DESIGNATION_PROFILE.close()
+                    REQUIREED_USER_REINCARNATION_COUNT = READ_DESIGNATION_DATA["REQUIRE_USER_REINCARNATION_COUNT"]
+                    if "REINCARNATION_COUNT" in READ_USER_DATA:
+                        USER_CURRENT_REINCARNATION_COUNT = READ_USER_DATA["REINCARNATION_COUNT"]
+                    else:
+                        USER_CURRENT_REINCARNATION_COUNT = 0
+
+                    if USER_CURRENT_REINCARNATION_COUNT >= REQUIREED_USER_REINCARNATION_COUNT:
+                        READ_USER_DATA["NOW_EQUIP_DESIGNATION"] = "_"
+                        with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "w", encoding = "utf-8") as WRITE_USER_PROFILE:
+                            json.dump(READ_USER_DATA, WRITE_USER_PROFILE, indent = 4)
+
+                        with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+                            READ_USER_DATA = json.load(READ_USER_PROFILE)
+                            READ_USER_PROFILE.close()
+
+                        NOW_USER_EQUIP_DESIGNATION = READ_USER_DATA["NOW_EQUIP_DESIGNATION"]
+
+                        if NOW_USER_EQUIP_DESIGNATION == DESIGNATION_NAME:
+                            await ctx.send(f"칭호[{DESIGNATION_NAME}]는 현재 이미 장착중인 칭호 입니다.")
+
+                        else:
+                            READ_USER_DATA["NOW_EQUIP_DESIGNATION"] = DESIGNATION_NAME
+                            with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "w", encoding = "utf-8") as WRITE_USER_PROFILE:
+                                json.dump(READ_USER_DATA, WRITE_USER_PROFILE, indent = 4)
+
+                            with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+                                READ_USER_DATA = json.load(READ_USER_PROFILE)
+                                READ_USER_PROFILE.close()
+                            
+                            with open(f"{User_Data_dir}\\Designation_List\\{DESIGNATION_NAME}.json", "r", encoding = "utf-8") as READ_DESIGNATION_PROFILE:
+                                READ_DESIGNATION_DATA = json.load(READ_DESIGNATION_PROFILE)
+                                READ_DESIGNATION_PROFILE.close()
+
+                            DESIGNATION_QUALIFICATION = READ_DESIGNATION_DATA["REQUIRE_USER_REINCARNATION_COUNT"]
+                            NOW_USER_DESIGNATION_NAME = READ_USER_DATA["NOW_EQUIP_DESIGNATION"]
+
+                            embed = discord.Embed(title = f"##현재 당신이 장착하고 있는 칭호##", description = "")
+                            embed.add_field(name = f":beginner: {NOW_USER_DESIGNATION_NAME} :beginner:", value = f"조건 : 환생 횟수 {DESIGNATION_QUALIFICATION}회 이상")
+                            await ctx.send(embed = embed)
+                    else:
+                        await ctx.send(f"당신은 [{DESIGNATION_NAME}]칭호를 장착할 권한이 없습니다.")
+
+            elif EQUIP_WHETHER in EQUIP_STATUS_NEGATIVE:
+                await ctx.send("아직 기능 미구현 상태 입니다.")
+                
+                """
+                NOW_EQUIP_DESIGNATION_CHECK = "NOW_EQUIP_DESIGNATION"
+
+                if NOW_EQUIP_DESIGNATION_CHECK in READ_USER_DATA:
+                    NOW_USER_EQUIP_DESIGNATION = READ_USER_DATA["NOW_EQUIP_DESIGNATION"]
+                    
+
+                else:
+                    await ctx.send("현재 당신은 칭호를 장착하고 있지 않습니다")
+                    """         
 
 @bot.command()
 async def 베팅(ctx, arg):
@@ -2235,16 +2690,25 @@ async def 환생(ctx):
                 if STOCK_NAME not in READ_USER_DATA:
                     REINCARNATION_QUALIFICATION = REINCARNATION_QUALIFICATION + 0
                 else:
-                    REINCARNATION_QUALIFICATION = REINCARNATION_QUALIFICATION + 1
+                    STOCK_VALUE_CHECK = READ_USER_DATA[STOCK_NAME]
+                    if STOCK_VALUE_CHECK != 0:
+                        REINCARNATION_QUALIFICATION = REINCARNATION_QUALIFICATION + 1
+                    else:
+                        REINCARNATION_QUALIFICATION = REINCARNATION_QUALIFICATION + 0
         else:
             if STOCK_NAME not in READ_USER_DATA:
                 REINCARNATION_QUALIFICATION = REINCARNATION_QUALIFICATION + 0
             else:
-                REINCARNATION_QUALIFICATION = REINCARNATION_QUALIFICATION + 1
+                STOCK_VALUE_CHECK = READ_USER_DATA[STOCK_NAME]
+                if STOCK_VALUE_CHECK != 0:
+                    REINCARNATION_QUALIFICATION = REINCARNATION_QUALIFICATION + 1
+                else:
+                    REINCARNATION_QUALIFICATION = REINCARNATION_QUALIFICATION + 0
+                
     #=============================보유 주식 체크=============================
 
     #=============================보유 자산 체크=============================
-    if USER_MONEY >= 5000000000: #50억
+    if USER_MONEY >= 3000000000: #50억
         REINCARNATION_QUALIFICATION = REINCARNATION_QUALIFICATION + 0
     else:
         if NOW_TEST_CHECK == 1:
@@ -2261,7 +2725,9 @@ async def 환생(ctx):
 
         CHECK_MSG = await bot.wait_for("Message", check = LAST_CHECK)
         
-        if CHECK_MSG.content.lower in ("Y", "y", "Yes", "YES", "yes", "ㅛㄷㄴ", "ㅛ"):
+        REINCARNATION_CHECK_LIST = ["Y", "y", "Yes", "YES", "yes", "ㅛㄷㄴ", "ㅛ"]
+        
+        if CHECK_MSG.content in REINCARNATION_CHECK_LIST:
             #===========================================================환생 횟수 변경===========================================================
             with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as WRITE_USER_PROFILE:
                 WRITE_USER_DATA = json.load(WRITE_USER_PROFILE)
@@ -2309,7 +2775,7 @@ async def 환생(ctx):
     else:
         await ctx.send("당신은 환생조건에 부합하지 않습니다")
         embed = discord.Embed(title = f"[##환생조건##]", description = f"")
-        embed.add_field(name = f"조건 1", value = f"보유자산 50억 이상", inline = False)
+        embed.add_field(name = f"조건 1", value = f"보유자산 30억 이상", inline = False)
         embed.add_field(name = f"조건 2", value = f"보유주식 전부 0주", inline = False)
 
         await ctx.send(embed = embed)
@@ -2336,6 +2802,7 @@ async def 가격초기화(ctx):
 
     else:
         await ctx.send("당신은 이 명령어를 사용할 권한이 없습니다.")
+
 """
 @bot.command()
 @commands.is_owner()
@@ -2420,8 +2887,8 @@ async def Stock_Change_Cycle(self):
     ARRAY_COUNTER = len(CHANGE_PRICE_STOCK_LIST)
     #주식 거래장 채널 ID = 838936568273043476
     CHANCE_CHECKER = [1, 2, 3, 4, 5]
-    CONTROL = 0
-    WARNING = 1
+    CONTROL = 1
+    WARNING = 0
     ADMIN = "심심한데놀아줘#2140"
     #=========================변수 선언=========================
                 
@@ -2462,7 +2929,14 @@ async def Stock_Change_Cycle(self):
                     if STOCK_NAME_CHECK in READ_USER_DATA:
                         USER_OWN_STOCK_AMOUNT = READ_USER_DATA[STOCK_NAME_CHECK]
                         if USER_OWN_STOCK_AMOUNT != 0:
-                            CONTROL = 1
+                            if USER_OWN_STOCK_AMOUNT != 0.0:
+                                CONTROL = 1
+                            else:
+                                CONTROL = 0
+                        
+                        elif STOCK_NAME == "롤":
+                            CONTROL = 0
+
                         else:
                             CONTROL = 0
                 
@@ -2924,7 +3398,14 @@ async def Stock_Change_Cycle(self):
                                 
                             
 
-
+                if STOCK_PRICE_AFCH >= 300000:
+                    if STOCK_NAME == "기광월드":
+                        pass
+                    else:
+                        STOCK_PRICE_AFCH = 300000
+                        pass
+                else:
+                    pass
                 
                 with open(f"{User_Data_dir}\\Stock_List\\{STOCK_NAME}.json", "w", encoding = "utf-8") as STOCK_LIST_PROFILE:
                     STOCK_LIST_DATA['STOCK_PRICE'] = STOCK_PRICE_AFCH
@@ -2970,13 +3451,15 @@ async def Stock_Change_Cycle(self):
 
 @bot.command()
 async def 테스트(ctx):
-    CMD_AUTHOR_USER = ctx.author
-    with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
-        READ_USER_DATA = json.load(READ_USER_PROFILE)
-        READ_USER_PROFILE.close()
-
-    USER_MONEY = READ_USER_DATA['USERMONEY']
-    await ctx.send(embed = discord.Embed(title = f":warning: 환생 알림 :warning:", description = f"환생을 진행하게 되면 현재 당신의 자산 [{USER_MONEY}원] 전부\n사라지고 기본 시작금인 20만원으로 시작하게 됩니다.\n정말로 환생하시겠습니까?  [Y/N]"))
+    TEST_FILE_DIR = f"{User_Data_dir}\\User_Data\\"
+    TEST_FILE_NAME_LIST = os.listdir(TEST_FILE_DIR)
+    TEST_FILE_NAME_LIST_COUNTER = len(TEST_FILE_NAME_LIST)
+    await ctx.send(f"TEST_FILE_NAME_LIST = {TEST_FILE_NAME_LIST}")
+    
+    for COUNT in range(TEST_FILE_NAME_LIST_COUNTER):
+        TEST_FILE_NAME = TEST_FILE_NAME_LIST[COUNT]
+        await ctx.send(f"{TEST_FILE_NAME}")
+    #await ctx.send("아직 테스트 목록이 세팅되지 않았습니다")
 
 @bot.command()
 async def DM테스트(ctx, *, message=None):
@@ -2984,7 +3467,21 @@ async def DM테스트(ctx, *, message=None):
     user = ctx.author
     await user.send(message)
 
+@bot.command()
+async def 변수테스트(ctx, arg):
+    CMD_AUTHOR_USER = ctx.author
+    JSON_KEY = str(arg)
+    with open(f"{User_Data_dir}\\User_Data\\{CMD_AUTHOR_USER}.json", "r", encoding = "utf-8") as READ_USER_PROFILE:
+        READ_USER_DATA = json.load(READ_USER_PROFILE)
+        READ_USER_PROFILE.close()
+
+    PRINT_VALUE = READ_USER_DATA[JSON_KEY]
+
+    await ctx.send(PRINT_VALUE)
+
     
+    
+        
 
     
             
